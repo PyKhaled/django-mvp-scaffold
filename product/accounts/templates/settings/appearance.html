@@ -13,7 +13,6 @@
     };
     var url = new URL(window.location);
     var form = document.getElementById("appearanceSettings");
-    var submitButton = document.getElementById("submit-changes");
     var resetButton = document.getElementById("reset-changes");
     var checkItems = function () {
       for (var key in themeConfig) {
@@ -56,15 +55,6 @@
 
     form.addEventListener("submit", function(event) {
       event.preventDefault();
-      for (var key in themeConfig) {
-        var value = themeConfig[key];
-        document.documentElement.removeAttribute("data-bs-" + key);
-        window.localStorage.removeItem("tabler-" + key);
-        url.searchParams.delete(key);
-      }
-      checkItems();
-      window.history.pushState({}, "", url);
-
     });
 
 

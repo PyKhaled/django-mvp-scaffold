@@ -65,7 +65,12 @@ ROOT_URLCONF = 'product.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [Path.joinpath(SOURCE_DIR, 'templates')],
+        # Keep account templates ahead of contrib.admin's templates so the
+        # product's authentication screens win regardless of app ordering.
+        'DIRS': [
+            SOURCE_DIR / 'accounts' / 'templates',
+            SOURCE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
