@@ -1,0 +1,52 @@
+{% load i18n %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="{% block meta_description %}Creative production and creator workflow management.{% endblock %}">
+  <title>{% block head_title %}Dashboard{% endblock %} · CreativeBatch</title>
+  {% include 'layout/tabler_head.html' %}
+  {% block page_styles %}{% endblock %}
+</head>
+<body class="layout-fluid">
+  <div class="page">
+    {% include 'layout/header.html' %}
+    <div class="page-wrapper">
+      {% include 'layout/messages.html' %}
+
+      <div class="page-header d-print-none" aria-label="Page header">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <div class="page-pretitle">{% block page_pretitle %}{% endblock %}</div>
+              <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">{% block page_actions %}{% endblock %}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main class="page-body">
+        {% block page_content %}
+          {% include 'layout/empty.html' %}
+        {% endblock %}
+      </main>
+
+      {% include 'layout/footer.html' %}
+    </div>
+  </div>
+
+  {% include 'layout/tabler_scripts.html' %}
+  <script>
+    document.querySelectorAll('.toast').forEach(function (element) {
+      window.setTimeout(function () {
+        element.classList.remove('show');
+      }, 4000);
+    });
+  </script>
+  {% block page_scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,120 @@
+:root {
+  --creativebatch-ink: #182433;
+  --creativebatch-muted: #667382;
+  --creativebatch-surface: #f6f8fb;
+}
+
+.creativebatch-mark {
+  align-items: center;
+  background: var(--tblr-primary);
+  border-radius: .65rem;
+  color: var(--tblr-primary-fg, #fff);
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  margin-right: .6rem;
+  width: 2rem;
+}
+
+.creativebatch-mark svg {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.creativebatch-wordmark {
+  color: var(--creativebatch-ink);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -.025em;
+}
+
+.creativebatch-wordmark span {
+  color: var(--tblr-primary);
+}
+
+[data-bs-theme="dark"] .creativebatch-wordmark {
+  color: var(--tblr-body-color);
+}
+
+.marketing-hero {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(var(--tblr-primary-rgb), .14), transparent 32rem),
+    linear-gradient(180deg, var(--tblr-bg-surface) 0%, var(--creativebatch-surface) 100%);
+  overflow: hidden;
+  padding: 6rem 0 5rem;
+}
+
+.marketing-eyebrow {
+  color: var(--tblr-primary);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.marketing-title {
+  color: var(--creativebatch-ink);
+  font-size: clamp(2.6rem, 6vw, 4.75rem);
+  letter-spacing: -.055em;
+  line-height: .98;
+  max-width: 13ch;
+}
+
+.marketing-lead {
+  color: var(--creativebatch-muted);
+  font-size: 1.2rem;
+  line-height: 1.7;
+  max-width: 40rem;
+}
+
+.workflow-card {
+  border: 1px solid var(--tblr-border-color);
+  box-shadow: 0 1rem 3rem rgba(24, 36, 51, .06);
+}
+
+.workflow-number {
+  align-items: center;
+  background: var(--tblr-primary-lt);
+  border-radius: 999px;
+  color: var(--tblr-primary);
+  display: inline-flex;
+  font-weight: 700;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
+}
+
+.landing-panel {
+  background: var(--creativebatch-ink);
+  border-radius: 1.5rem;
+  box-shadow: 0 2rem 5rem rgba(24, 36, 51, .18);
+  color: #fff;
+  padding: 2rem;
+  transform: rotate(1.5deg);
+}
+
+.landing-panel .card {
+  transform: rotate(-1.5deg);
+}
+
+@media (max-width: 767.98px) {
+  .marketing-hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .landing-panel {
+    margin-top: 1.5rem;
+    transform: none;
+  }
+
+  .landing-panel .card {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}

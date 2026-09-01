@@ -1,0 +1,43 @@
+{% load i18n static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block head_title %}Helpdesk{% endblock %} · CreativeBatch</title>
+  {% include 'layout/tabler_head.html' %}
+  <link rel="stylesheet" href="{% static 'css/helpdesk.css' %}">
+  {% block page_styles %}{% endblock %}
+</head>
+<body class="layout-fluid">
+  <div class="page">
+    {% include 'layout/header.html' %}
+    <div class="page-wrapper">
+      {% include 'layout/messages.html' %}
+
+      <div class="page-header d-print-none" aria-label="Page header">
+        <div class="container-xl">
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <div class="page-pretitle">{% block page_pretitle %}Support{% endblock %}</div>
+              <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+              <div class="btn-list">{% block page_actions %}{% endblock %}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main class="page-body">
+        <div class="container-xl">{% block page_content %}{% endblock %}</div>
+      </main>
+
+      {% include 'layout/footer.html' %}
+    </div>
+  </div>
+
+  {% include 'layout/tabler_scripts.html' %}
+  {% block page_scripts %}{% endblock %}
+</body>
+</html>

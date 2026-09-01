@@ -1,0 +1,63 @@
+{% extends 'helpdesk/base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans 'Ticket Submitted' %}{% endblock %}
+{% block page_title %}{% trans 'Ticket Submitted Successfully' %}{% endblock %}
+{% block page_pretitle %}{% trans 'Support' %}{% endblock %}
+
+{% block page_content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <div class="mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon text-success" width="64" height="64" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></path></svg>
+        </div>
+
+        <h2 class="card-title mb-2">{% trans 'Thank You!' %}</h2>
+        <p class="text-muted mb-4">
+          {% trans 'Your support ticket has been submitted successfully.' %}
+        </p>
+
+        {% if ticket %}
+        <div class="alert alert-info mb-4">
+          <strong>{% trans 'Ticket ID:' %}</strong> <code>#{{ ticket.id }}</code><br>
+          <small class="text-muted">{% trans 'Save this number to track your ticket status' %}</small>
+        </div>
+
+        <div class="mb-4 text-start">
+          <h4 class="mb-3">{% trans 'What happens next?' %}</h4>
+          <ul class="list-unstyled">
+            <li class="mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-success" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></path></svg>
+              {% trans 'We\'ve sent a confirmation email to your inbox' %}
+            </li>
+            <li class="mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-success" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></path></svg>
+              {% trans 'Our support team will review your ticket shortly' %}
+            </li>
+            <li class="mb-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-success" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></path></svg>
+              {% trans 'We\'ll send updates to your email as we work on your request' %}
+            </li>
+          </ul>
+        </div>
+        {% endif %}
+
+        <div class="btn-list justify-content-center">
+          <a href="/helpdesk/" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l20 7l-20 7l-20 -7l20 -7" /><polyline points="12 12 12 21" /><polyline points="4 9 4 18" /><polyline points="20 9 20 18" /></polyline></svg>
+            {% trans 'Back to Support Centre' %}
+          </a>
+          {% if ticket %}
+          <a href="/helpdesk/tickets/{{ ticket.id }}/" class="btn btn-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M2 12s3.63 -7 10 -7s10 7 10 7s-3.63 7 -10 7s-10 -7 -10 -7" /></path></svg>
+            {% trans 'View Ticket' %}
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

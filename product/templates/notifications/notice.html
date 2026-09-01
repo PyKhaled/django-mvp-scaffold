@@ -1,0 +1,15 @@
+<a href="#" class="list-group-item">
+  <div class="row align-items-center">
+    <div class="col text-truncate">
+      <div class="text-body d-block">
+        {{ notice.actor }} {{ notice.verb }} {% if notice.target %} of {{ notice.target }} {% endif %}
+      </div>
+      <span class="text-secondary small lh-base">
+        {{ notice.timesince }} ago
+      </span>
+      <div class="d-block text-secondary text-truncate mt-n1">
+        {{ notice.description|linebreaksbr }}
+      </div>
+    </div>
+  </div>
+</a>

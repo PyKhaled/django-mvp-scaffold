@@ -1,0 +1,59 @@
+{% extends 'settings/base.html' %}
+{% load static %}
+
+{% block setting_page_content %}
+<form method="POST" class="space=y">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="mb-4">Profile Details</h2>
+
+      <h3 class="card-title mt-4">Personal Information</h3>
+      <div class="row g-3">
+        <div class="col-md">
+          <div class="form-label">First Name</div>
+          <input type="text" class="form-control" name="first_name" value="{{ user.first_name }}">
+        </div>
+        <div class="col-md">
+          <div class="form-label">Last Name</div>
+          <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+        </div>
+      </div>
+
+      <h3 class="card-title mt-4">Email</h3>
+      <p class="card-subtitle">This contact will be shown to others publicly, so choose it carefully.</p>
+      <div class="row g-3">
+        <div class="row g-2">
+          <div class="col-auto">
+            <input type="text" class="form-control w-auto" name="email" value="{{ user.email }}">
+          </div>
+        </div>
+      </div>
+
+      <h3 class="card-title mt-4">Password</h3>
+      <p class="card-subtitle">You can set a permanent password if you don't want to use temporary login codes.</p>
+      <div class="row g-3">
+        <div class="'col-md">
+          <a href="{% url 'settings:change_password' %}" class="btn btn-1">Set new password</a>
+        </div>
+      </div>
+
+      <h3 class="card-title mt-4">Public profile</h3>
+      <p class="card-subtitle">Making your profile public means that anyone on the Dashkit network will be able to find you.</p>
+      <div class="row g-3">
+        <label class="form-check form-switch form-switch-lg">
+          <input class="form-check-input" type="checkbox">
+            <span class="form-check-label form-check-label-on">You're currently visible</span>
+            <span class="form-check-label form-check-label-off">You're currently invisible</span>
+        </label>
+      </div>
+
+    </div>
+    <div class="card-footer bg-transparent mt-auto">
+      <div class="btn-list justify-content-end">
+        <button class="btn btn-1" type="reset">Candel</button>
+        <button class="btn btn-primary btn-2" type="submit">Submit</button>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

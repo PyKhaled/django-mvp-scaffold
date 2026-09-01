@@ -1,0 +1,78 @@
+{% load i18n hijack %}
+
+{% if hijack_user %}
+  <!-- Hijack Modal Warning -->
+  <div class="modal fade" id="hijackWarningModal" tabindex="-1" role="dialog" aria-labelledby="hijackWarningLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header border-warning">
+          <h5 class="modal-title" id="hijackWarningLabel">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon text-warning me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M12 7v5" />
+              <path d="M12 16v.01" />
+            </svg>
+            {% trans "Active User Impersonation" %}
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-warning alert-icon" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" class="alert-icon-svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M12 7v5" />
+              <path d="M12 16v.01" />
+            </svg>
+            <div>
+              {% trans "You are currently impersonating another user's account." %}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">{% trans "Current User" %}</label>
+            <div class="input-group">
+              <input type="text" class="form-control" readonly value="{{ hijack_user.username }}">
+              {% if hijack_user.get_full_name %}
+                <span class="input-group-text">{{ hijack_user.get_full_name }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="alert alert-info alert-icon" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" class="alert-icon-svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+              <path d="M12 7v5" />
+              <path d="M12 16v.01" />
+            </svg>
+            <div>
+              <strong>{% trans "Tip:" %}</strong> {% trans "All actions you perform will be under this user's account. Remember to release the user when you're finished." %}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Keep Hijacking" %}</button>
+          <a href="{% url 'hijack:release_hijack' %}" class="btn btn-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M9 6l-6 6l6 6" />
+              <path d="M15 12h-12" />
+            </svg>
+            {% trans "Release User" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Auto-show hijack warning modal on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      var hijackModal = new bootstrap.Modal(document.getElementById('hijackWarningModal'));
+      // Uncomment to auto-show on every page load:
+      // hijackModal.show();
+    });
+  </script>
+{% endif %}

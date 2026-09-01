@@ -1,0 +1,139 @@
+{% extends 'helpdesk/base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans 'Ticket' %} #{{ ticket.id }}{% endblock %}
+{% block page_title %}{% trans 'Ticket' %} #{{ ticket.id }}: {{ ticket.title }}{% endblock %}
+{% block page_pretitle %}{% trans 'Support' %}{% endblock %}
+
+{% block page_content %}
+<div class="row">
+  <div class="col-md-8">
+    <!-- Ticket Details -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 class="card-title">{% trans 'Ticket Details' %}</h3>
+        <div class="card-actions">
+          <span class="badge bg-{% if ticket.status == 1 %}success{% elif ticket.status == 2 %}warning{% elif ticket.status == 3 %}danger{% else %}secondary{% endif %}">
+            {{ ticket.get_status_display }}
+          </span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <strong>{% trans 'Ticket ID:' %}</strong> {{ ticket.id }}<br>
+            <strong>{% trans 'Created:' %}</strong> {{ ticket.created|date:'SHORT_DATETIME_FORMAT' }}<br>
+            <strong>{% trans 'Status:' %}</strong> {{ ticket.get_status_display }}
+          </div>
+          <div class="col-md-6">
+            <strong>{% trans 'Priority:' %}</strong>
+            <span class="badge bg-{% if ticket.priority == 1 %}success{% elif ticket.priority == 2 %}warning{% else %}danger{% endif %}">
+              {{ ticket.get_priority_display }}
+            </span><br>
+            <strong>{% trans 'Last Update:' %}</strong> {{ ticket.modified|date:'SHORT_DATETIME_FORMAT' }}<br>
+            <strong>{% trans 'Assigned To:' %}</strong>
+            {% if ticket.assigned_to %}
+              {{ ticket.assigned_to.get_full_name|default:ticket.assigned_to.username }}
+            {% else %}
+              <em>{% trans 'Unassigned' %}</em>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div>
+          <h4 class="mb-2">{% trans 'Description' %}</h4>
+          <p class="text-secondary">{{ ticket.description|linebreaks }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments/Follow-ups -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">{% trans 'Updates' %} ({{ ticket.followup_set.count }})</h3>
+      </div>
+      <div class="list-group list-group-flush">
+        {% for followup in ticket.followup_set.all %}
+        <div class="list-group-item">
+          <div class="row align-items-center">
+            <div class="col">
+              <h4 class="mb-1">
+                {% if followup.user %}
+                  {{ followup.user.get_full_name|default:followup.user.username }}
+                  {% if followup.user.is_staff %}
+                    <span class="badge bg-primary">{% trans 'Staff' %}</span>
+                  {% endif %}
+                {% else %}
+                  {% trans 'System' %}
+                {% endif %}
+              </h4>
+              <p class="text-muted text-sm mb-2">{{ followup.date|date:'SHORT_DATETIME_FORMAT' }}</p>
+              <p class="text-secondary mb-0">{{ followup.comment|linebreaks }}</p>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="list-group-item">
+          <em class="text-muted">{% trans 'No updates yet' %}</em>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="col-md-4">
+    <!-- Quick Info Card -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 class="card-title">{% trans 'Quick Info' %}</h3>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <div class="text-muted text-sm mb-1">{% trans 'Status' %}</div>
+          <select class="form-select form-select-sm" disabled>
+            <option selected>{{ ticket.get_status_display }}</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <div class="text-muted text-sm mb-1">{% trans 'Priority' %}</div>
+          <div class="badge bg-{% if ticket.priority == 1 %}success{% elif ticket.priority == 2 %}warning{% else %}danger{% endif %}">
+            {{ ticket.get_priority_display }}
+          </div>
+        </div>
+        <div>
+          <div class="text-muted text-sm mb-1">{% trans 'Time in Queue' %}</div>
+          <p class="mb-0">
+            {% if ticket.assigned_to %}
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-success" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9 -9 9s-9 -1.8 -9 -9s1.8 -9 9 -9" /><path d="M12 6v6l4 2" /></path></svg>
+              {% trans 'Being worked on' %}
+            {% else %}
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon text-warning" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5l3 3" /></path></svg>
+              {% trans 'Waiting in queue' %}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 class="card-title">{% trans 'Submitter' %}</h3>
+      </div>
+      <div class="card-body">
+        <p><strong>{{ ticket.submitter_email }}</strong></p>
+        <p class="text-muted text-sm mb-0">{{ ticket.get_status_display }}</p>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <a href="/helpdesk/" class="btn btn-secondary w-100">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l-6 6l6 6" /><path d="M15 12h-12" /></path></svg>
+      {% trans 'Back to Support' %}
+    </a>
+  </div>
+</div>
+{% endblock %}

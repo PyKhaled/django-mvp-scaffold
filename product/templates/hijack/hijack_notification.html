@@ -1,0 +1,74 @@
+{% load i18n %}
+{% load hijack %}
+
+{% if hijack_user %}
+  <div class="hijack-warning-container">
+    <div class="alert alert-warning alert-dismissible" role="alert" id="hijack-warning">
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div class="d-flex align-items-center">
+        <div class="me-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon text-warning" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+            <path d="M12 7v5" />
+            <path d="M12 16v.01" />
+          </svg>
+        </div>
+        <div class="flex-grow-1">
+          <h4 class="alert-title mb-1">
+            {% trans "You are currently impersonating another user" %}
+          </h4>
+          <div class="text-secondary">
+            <strong>{% trans "Hijacking as:" %}</strong>
+            <code>{{ hijack_user.username }}</code>
+            {% if hijack_user.get_full_name %}
+              ({{ hijack_user.get_full_name }})
+            {% endif %}
+          </div>
+        </div>
+        <div class="ms-3">
+          <a href="{% url 'hijack:release_hijack' %}" class="btn btn-sm btn-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M9 6l-6 6l6 6" />
+              <path d="M15 12h-12" />
+            </svg>
+            {% trans "Release User" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .hijack-warning-container {
+      position: relative;
+      z-index: 1030;
+    }
+
+    .alert.alert-warning {
+      background-color: #fff3cd;
+      border-color: #ffc107;
+      color: #664d03;
+    }
+
+    .alert.alert-warning .btn-warning {
+      background-color: #ffc107;
+      border-color: #ffc107;
+      color: #000;
+    }
+
+    .alert.alert-warning .btn-warning:hover {
+      background-color: #ffb800;
+      border-color: #ffb800;
+    }
+
+    .alert.alert-warning code {
+      background-color: rgba(0, 0, 0, 0.05);
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-family: monospace;
+      font-size: 0.875em;
+    }
+  </style>
+{% endif %}

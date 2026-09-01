@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans 'Support Centre' %}{% endblock %}
+{% block page_title %}{% trans 'Support Centre' %}{% endblock %}
+{% block page_pretitle %}{% trans 'Help & Support' %}{% endblock %}
+
+{% block page_actions %}
+{% if user.is_staff %}
+<a href="{% url 'admin:index' %}" class="btn btn-primary">
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l20 7l-20 7l-20 -7l20 -7" /><polyline points="12 12 12 21" /><polyline points="4 9 4 18" /><polyline points="20 9 20 18" /></polyline></svg>
+  {% trans 'Helpdesk' %}
+</a>
+{% endif %}
+{% endblock %}
+
+{% block page_content %}
+<div class="container-xl">
+
+
+  <div class="row mb-4">
+
+    <div class="col-md-8">
+      <!-- Submit Ticket Form -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{% trans 'Submit a Ticket' %}</h3>
+        </div>
+        <form method="post" action="{% url 'helpdesk:submit' %}">
+          {% csrf_token %}
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="id_title">{% trans 'Title' %}</label>
+              <input type="text" class="form-control" id="id_title" name="title" required placeholder="{% trans 'Brief summary of your issue' %}">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="id_body">{% trans 'Description' %}</label>
+              <textarea class="form-control" id="id_body" name="body" rows="6" required placeholder="{% trans 'Describe your issue in detail' %}"></textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="id_email">{% trans 'Email Address' %}</label>
+              <input type="email" class="form-control" id="id_email" name="email" required placeholder="your@email.com">
+              <small class="form-hint">{% trans 'We will send updates to this email' %}</small>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="id_priority">{% trans 'Priority' %}</label>
+              <select class="form-select" id="id_priority" name="priority">
+                <option value="1">{% trans '1 - Low' %}</option>
+                <option value="2" selected>{% trans '2 - Medium' %}</option>
+                <option value="3">{% trans '3 - High' %}</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-footer text-end">
+            <button type="submit" class="btn btn-primary">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></path></svg>
+              {% trans 'Submit Ticket' %}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-md-4">
+
+      <!-- Ticket Status Info -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <h3 class="card-title">{% trans 'Check Ticket Status' %}</h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted">{% trans 'Enter your ticket number and email to view the status of your support request.' %}</p>
+          <form method="get" action="/helpdesk/">
+            <div class="mb-2">
+              <label class="form-label" for="ticket_id">{% trans 'Ticket ID' %}</label>
+              <input type="text" class="form-control" id="ticket_id" name="ticket_id" placeholder="e.g., 12345" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="ticket_email">{% trans 'Email Address' %}</label>
+              <input type="email" class="form-control" id="ticket_email" name="email" placeholder="your@email.com" required>
+            </div>
+            <button type="submit" class="btn btn-secondary w-100">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M9 12h6" /><path d="M12 9v6" /></path></svg>
+              {% trans 'Check Status' %}
+            </button>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- Help Info -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{% trans 'Need Help?' %}</h3>
+        </div>
+        <div class="card-body">
+          <p class="text-muted">
+            {% trans 'If you need assistance, please refer to our knowledge base or FAQ section.' %}
+          </p>
+          <ul class="list-unstyled list-separated">
+            <li>
+              <a href="https://help.example.com" target="_blank" class="list-separated-item">
+                <span>{% trans 'Knowledge Base' %}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6h11a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-11a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2" /><path d="M9 6v-2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v2" /><path d="M13 12h.01" /><path d="M9 12h.01" /></path></svg>
+              </a>
+            </li>
+            <li>
+              <a href="https://faq.example.com" target="_blank" class="list-separated-item">
+                <span>{% trans 'FAQ' %}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 17l0 .01" /><path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" /></path></svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+
+
+    </div>
+
+
+
+
+  </div>
+</div>
+{% endblock %}

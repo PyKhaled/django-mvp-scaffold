@@ -1,0 +1,5 @@
+<div class="list-group list-group-flush list-group-hoverable">
+  {% for notice in user.notifications.all %}
+    {% include 'notifications/notice.html' %}
+  {% endfor %}
+</div>

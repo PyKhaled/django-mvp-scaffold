@@ -1,0 +1,17 @@
+{% extends 'registration/base.html' %}
+{% load static i18n %}
+
+{% block head_title %}{% translate "Logged out" %}{% endblock %}
+
+{% block page_content %}
+<div class="card">
+  <div class="card-body">
+    <h2 class="card-title text-center mb-4">{% trans "You’ve been logged out" %}</h2>
+    <p class="text-secondary mb-4">{% trans "You have been logged out successfully. Thank you for visiting." %}</p>
+
+    <a href="{% url 'login' %}" class="btn btn-primary btn-4 w-100">{% trans "Log in again" %}</a>
+    <a href="/" class="btn btn-secondary btn-4 w-100">{% trans "Go to homepage" %}</a>
+
+  </div>
+</div>
+{% endblock %}

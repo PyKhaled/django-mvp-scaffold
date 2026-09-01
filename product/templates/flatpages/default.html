@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_title %}{{ flatpage.title }}{% endblock %}
+{% block page_title %}
+  {{ flatpage.title }}
+{% endblock %}
+
+{% block page_content %}
+    <div class="container-xl">
+      <div class="card card-lg">
+        <div class="card-body">
+          <div class="markdown">
+            {{ flatpage.content|safe }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

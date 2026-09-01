@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block head_title %}{% trans 'Helpdesk Dashboard' %}{% endblock %}
+{% block page_title %}{% trans 'Helpdesk Dashboard' %}{% endblock %}
+{% block page_pretitle %}{% trans 'Support Management' %}{% endblock %}
+
+{% block page_actions %}
+<div class="btn-list">
+    <a href="{% url 'admin:helpdesk_ticket_add' %}" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></path></svg>
+        {% trans 'New Ticket' %}
+    </a>
+</div>
+{% endblock %}
+
+{% block page_content %}
+<div class="container-xl">
+    <!-- Stats -->
+    <div class="row row-deck row-cards mb-4">
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-flex-start">
+                        <div class="flex-grow-1">
+                            <div class="text-muted text-sm">{% trans 'Open Tickets' %}</div>
+                            <div class="text-reset">
+                                <h3 class="card-title mb-0">{{ open_tickets_count }}</h3>
+                            </div>
+                        </div>
+                        <div class="text-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l20 7l-20 7l-20 -7l20 -7" /><polyline points="12 12 12 21" /><polyline points="4 9 4 18" /><polyline points="20 9 20 18" /></polyline></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-flex-start">
+                        <div class="flex-grow-1">
+                            <div class="text-muted text-sm">{% trans 'In Progress' %}</div>
+                            <div class="text-reset">
+                                <h3 class="card-title mb-0">{{ in_progress_count }}</h3>
+                            </div>
+                        </div>
+                        <div class="text-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5l3 3" /></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-flex-start">
+                        <div class="flex-grow-1">
+                            <div class="text-muted text-sm">{% trans 'Resolved' %}</div>
+                            <div class="text-reset">
+                                <h3 class="card-title mb-0">{{ resolved_count }}</h3>
+                            </div>
+                        </div>
+                        <div class="text-success">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-flex-start">
+                        <div class="flex-grow-1">
+                            <div class="text-muted text-sm">{% trans 'Avg. Response' %}</div>
+                            <div class="text-reset">
+                                <h3 class="card-title mb-0">{{ avg_response_time|default:'--' }}</h3>
+                            </div>
+                        </div>
+                        <div class="text-primary">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="32" height="32" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 7v5l3 3" /></path></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-deck row-cards mb-4">
+        <!-- Recent Tickets -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">{% trans 'Recent Tickets' %}</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-vcenter">
+                    <thead>
+                        <tr>
+                            <th>{% trans 'ID' %}</th>
+                            <th>{% trans 'Title' %}</th>
+                            <th>{% trans 'Status' %}</th>
+                            <th>{% trans 'Priority' %}</th>
+                            <th>{% trans 'Submitter' %}</th>
+                            <th>{% trans 'Created' %}</th>
+                            <th>{% trans 'Actions' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ticket in recent_tickets %}
+                        <tr>
+                            <td><strong>#{{ ticket.id }}</strong></td>
+                            <td>{{ ticket.title }}</td>
+                            <td>
+                                <span class="badge bg-{% if ticket.status == 1 %}success{% elif ticket.status == 2 %}warning{% elif ticket.status == 3 %}danger{% else %}secondary{% endif %}">
+                                    {{ ticket.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{% if ticket.priority == 1 %}success{% elif ticket.priority == 2 %}warning{% else %}danger{% endif %}">
+                                    {{ ticket.get_priority_display }}
+                                </span>
+                            </td>
+                            <td>{{ ticket.submitter_email }}</td>
+                            <td><span class="text-muted">{{ ticket.created|date:'SHORT_DATE_FORMAT' }}</span></td>
+                            <td>
+                                <a href="{% url 'admin:helpdesk_ticket_change' ticket.id %}" class="btn btn-sm btn-ghost-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></path></svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                {% trans 'No tickets' %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

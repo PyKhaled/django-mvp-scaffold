@@ -1,0 +1,290 @@
+{% extends 'settings/base.html' %}
+{% load static %}
+
+{% block page_scripts %}
+<script defer>
+  document.addEventListener("DOMContentLoaded", function () {
+    var themeConfig = {
+      theme: "light",
+      "theme-base": "gray",
+      "theme-font": "sans-serif",
+      "theme-primary": "blue",
+      "theme-radius": "1",
+    };
+    var url = new URL(window.location);
+    var form = document.getElementById("appearanceSettings");
+    var submitButton = document.getElementById("submit-changes");
+    var resetButton = document.getElementById("reset-changes");
+    var checkItems = function () {
+      for (var key in themeConfig) {
+        var value = window.localStorage["tabler-" + key] || themeConfig[key];
+        if (!!value) {
+          var radios = form.querySelectorAll(`[name="${key}"]`);
+          if (!!radios) {
+            radios.forEach((radio) => {
+              radio.checked = radio.value === value;
+            });
+          }
+        }
+      }
+    };
+
+    form.addEventListener("change", function (event) {
+      var target = event.target,
+      name = target.name,
+      value = target.value;
+      for (var key in themeConfig) {
+        if (name === key) {
+          document.documentElement.setAttribute("data-bs-" + key, value);
+          window.localStorage.setItem("tabler-" + key, value);
+          url.searchParams.set(key, value);
+        }
+      }
+      window.history.pushState({}, "", url);
+    });
+
+    resetButton.addEventListener("click", function () {
+      for (var key in themeConfig) {
+        var value = themeConfig[key];
+        document.documentElement.removeAttribute("data-bs-" + key);
+        window.localStorage.removeItem("tabler-" + key);
+        url.searchParams.delete(key);
+      }
+      checkItems();
+      window.history.pushState({}, "", url);
+    });
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      for (var key in themeConfig) {
+        var value = themeConfig[key];
+        document.documentElement.removeAttribute("data-bs-" + key);
+        window.localStorage.removeItem("tabler-" + key);
+        url.searchParams.delete(key);
+      }
+      checkItems();
+      window.history.pushState({}, "", url);
+
+    });
+
+
+
+    checkItems();
+  });
+</script>
+{% endblock %}
+
+{% block setting_page_content %}
+<form id="appearanceSettings" class="space=y">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="mb-4">Appearance</h2>
+
+      <h3 class="card-title">Color mode</h3>
+      <p class="card-subtitle">Choose the color mode for your app.</p>
+      <div class="row g-3">
+        <div class="col-auto">
+          <label class="form-check">
+            <div class="form-selectgroup-item">
+              <input type="radio" name="theme" value="light" class="form-check-input" checked />
+              <div class="form-check-label">Light</div>
+            </div>
+          </label>
+          <label class="form-check">
+            <div class="form-selectgroup-item">
+              <input type="radio" name="theme" value="dark" class="form-check-input" />
+              <div class="form-check-label">Dark</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <h3 class="card-title mt-4">Color scheme</h3>
+      <p class="card-subtitle">The perfect color mode for your app.</p>
+      <div class="row g-3">
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="blue" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-blue"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="azure" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-azure"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="indigo" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-indigo"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="purple" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-purple"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="pink" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-pink"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="red" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-red"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="orange" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-orange"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="yellow" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-yellow"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="lime" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-lime"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="green" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-green"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="teal" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-teal"></span>
+          </label>
+        </div>
+        <div class="col-auto">
+          <label class="form-colorinput">
+            <input name="theme-primary" type="radio" value="cyan" class="form-colorinput-input" />
+            <span class="form-colorinput-color bg-cyan"></span>
+          </label>
+        </div>
+      </div>
+
+      <h3 class="card-title mt-4">Font family</h3>
+      <p class="card-subtitle">Choose the font family that fits your app.</p>
+      <div class="row g-3">
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-font" value="sans-serif" class="form-check-input" checked />
+            <div class="form-check-label">Sans-serif</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-font" value="serif" class="form-check-input" />
+            <div class="form-check-label">Serif</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-font" value="monospace" class="form-check-input" />
+            <div class="form-check-label">Monospace</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-font" value="comic" class="form-check-input" />
+            <div class="form-check-label">Comic</div>
+          </div>
+        </label>
+      </div>
+
+      <h3 class="card-title mt-4">Theme base</h3>
+      <p class="card-subtitle">Choose the gray shade for your app.</p>
+      <div class="row g-3">
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-base" value="slate" class="form-check-input" />
+            <div class="form-check-label">Slate</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-base" value="gray" class="form-check-input" checked />
+            <div class="form-check-label">Gray</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-base" value="zinc" class="form-check-input" />
+            <div class="form-check-label">Zinc</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-base" value="neutral" class="form-check-input" />
+            <div class="form-check-label">Neutral</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-base" value="stone" class="form-check-input" />
+            <div class="form-check-label">Stone</div>
+          </div>
+        </label>
+      </div>
+
+      <h3 class="card-title mt-4">Corner Radius</h3>
+      <p class="card-subtitle">Choose the border radius factor for your app.</p>
+      <div class="row g-3">
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-radius" value="0" class="form-check-input" />
+            <div class="form-check-label">0</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-radius" value="0.5" class="form-check-input" />
+            <div class="form-check-label">0.5</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-radius" value="1" class="form-check-input" checked />
+            <div class="form-check-label">1</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-radius" value="1.5" class="form-check-input" />
+            <div class="form-check-label">1.5</div>
+          </div>
+        </label>
+        <label class="form-check">
+          <div class="form-selectgroup-item">
+            <input type="radio" name="theme-radius" value="2" class="form-check-input" />
+            <div class="form-check-label">2</div>
+          </div>
+        </label>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="card-footer bg-transparent mt-auto">
+    <div class="btn-list justify-content-end">
+      <button id="reset-changes" class="btn btn-1" type="reset">Reset changes</button>
+      <button id="submit-changes" class="btn btn-primary btn-2" type="submit">Save</button>
+    </div>
+  </div>
+
+</div>
+</form>
+{% endblock %}
