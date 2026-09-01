@@ -27,12 +27,7 @@ DATABASES = {
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-STATICFILES_DIRS = [
-    Path.joinpath(BASE_DIR, 'product', 'static'),
-]
-
 STATIC_ROOT = Path.joinpath(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
 
 MEDIA_ROOT = Path.joinpath(BASE_DIR, 'mediafiles')
 MEDIA_URL = '/media/'

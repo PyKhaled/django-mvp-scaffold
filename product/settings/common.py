@@ -4,6 +4,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+SOURCE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,18 +38,12 @@ INSTALLED_APPS = [
 
 
     'maintenance_mode',
-    # 'bootstrap4form',
-    # 'rest_framework',
-    # 'helpdesk',
-
-    # 'accounts',
-    # 'notifications',
-    # 'chat',
-
-    # # 'push_notifications',
-    # 'hijack',
-    # 'hijack.contrib.admin',
-    # # 'simple_history',
+    'helpdesk',
+    'product.accounts.apps.AccountsConfig',
+    'notifications',
+    'hijack',
+    'hijack.contrib.admin',
+    'simple_history',
 
 
     # # 'sorl.thumbnail',
@@ -80,7 +75,7 @@ ROOT_URLCONF = 'product.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [Path.joinpath(BASE_DIR, 'templates')],
+        'DIRS': [Path.joinpath(SOURCE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -140,9 +135,10 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-# STATIC_URL = 'static/'
+# Keep the source directory shared by every environment so collectstatic can
+# discover the vendored Tabler build in production as well as development.
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [SOURCE_DIR / 'static']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

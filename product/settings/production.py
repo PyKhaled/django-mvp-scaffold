@@ -3,7 +3,7 @@ from .common import *
 DEBUG = False
 
 INSTALLED_APPS += [
-    
+
 ]
 
 MIDDLEWARE += [
@@ -54,3 +54,18 @@ EMAIL_USE_SSL = os.environ.get("EMAIL_USE_SSL", False)
 EMAIL_TIMEOUT = os.environ.get("EMAIL_TIMEOUT")
 EMAIL_SSL_KEYFILE = os.environ.get("EMAIL_SSL_KEYFILE")
 EMAIL_SSL_CERTFILE = os.environ.get("EMAIL_SSL_CERTFILE")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379/0",
+    },
+
+    "maintenance_mode": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379/1",
+    },
+}
+
+MAINTENANCE_MODE_STATE_BACKEND = ("maintenance_mode.backends.CacheBackend")
+MAINTENANCE_MODE_CACHE_BACKEND = "maintenance_mode"
