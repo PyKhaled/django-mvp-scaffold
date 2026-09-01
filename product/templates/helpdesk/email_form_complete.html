@@ -45,12 +45,12 @@
         {% endif %}
 
         <div class="btn-list justify-content-center">
-          <a href="/helpdesk/" class="btn btn-primary">
+          <a href="{% url 'helpdesk:home' %}" class="btn btn-primary">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l20 7l-20 7l-20 -7l20 -7" /><polyline points="12 12 12 21" /><polyline points="4 9 4 18" /><polyline points="20 9 20 18" /></polyline></svg>
             {% trans 'Back to Support Centre' %}
           </a>
           {% if ticket %}
-          <a href="/helpdesk/tickets/{{ ticket.id }}/" class="btn btn-secondary">
+          <a href="{% url 'helpdesk:public_view' %}?ticket={{ ticket.ticket_for_url|urlencode }}&amp;email={{ ticket.submitter_email|urlencode }}&amp;key={{ ticket.secret_key|urlencode }}" class="btn btn-secondary">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /><path d="M2 12s3.63 -7 10 -7s10 7 10 7s-3.63 7 -10 7s-10 -7 -10 -7" /></path></svg>
             {% trans 'View Ticket' %}
           </a>

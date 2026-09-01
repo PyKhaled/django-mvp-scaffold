@@ -52,10 +52,10 @@
     <!-- Comments/Follow-ups -->
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">{% trans 'Updates' %} ({{ ticket.followup_set.count }})</h3>
+        <h3 class="card-title">{% trans 'Updates' %} ({{ ticket.followup_set.public_followups.count }})</h3>
       </div>
       <div class="list-group list-group-flush">
-        {% for followup in ticket.followup_set.all %}
+        {% for followup in ticket.followup_set.public_followups %}
         <div class="list-group-item">
           <div class="row align-items-center">
             <div class="col">
@@ -130,7 +130,7 @@
     </div>
 
     <!-- Actions -->
-    <a href="/helpdesk/" class="btn btn-secondary w-100">
+    <a href="{% url 'helpdesk:home' %}" class="btn btn-secondary w-100">
       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l-6 6l6 6" /><path d="M15 12h-12" /></path></svg>
       {% trans 'Back to Support' %}
     </a>

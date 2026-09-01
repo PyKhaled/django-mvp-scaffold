@@ -28,31 +28,20 @@
         </div>
         <form method="post" action="{% url 'helpdesk:submit' %}">
           {% csrf_token %}
+          {{ form.media }}
+          {% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
           <div class="card-body">
-            <div class="mb-3">
-              <label class="form-label" for="id_title">{% trans 'Title' %}</label>
-              <input type="text" class="form-control" id="id_title" name="title" required placeholder="{% trans 'Brief summary of your issue' %}">
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="id_body">{% trans 'Description' %}</label>
-              <textarea class="form-control" id="id_body" name="body" rows="6" required placeholder="{% trans 'Describe your issue in detail' %}"></textarea>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="id_email">{% trans 'Email Address' %}</label>
-              <input type="email" class="form-control" id="id_email" name="email" required placeholder="your@email.com">
-              <small class="form-hint">{% trans 'We will send updates to this email' %}</small>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="id_priority">{% trans 'Priority' %}</label>
-              <select class="form-select" id="id_priority" name="priority">
-                <option value="1">{% trans '1 - Low' %}</option>
-                <option value="2" selected>{% trans '2 - Medium' %}</option>
-                <option value="3">{% trans '3 - High' %}</option>
-              </select>
-            </div>
+            {% if form.non_field_errors %}
+              <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+            {% for field in form.visible_fields %}
+              <div class="mb-3">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                {% if field.help_text %}<div class="form-hint">{{ field.help_text }}</div>{% endif %}
+              </div>
+            {% endfor %}
           </div>
           <div class="card-footer text-end">
             <button type="submit" class="btn btn-primary">
@@ -73,21 +62,7 @@
           <h3 class="card-title">{% trans 'Check Ticket Status' %}</h3>
         </div>
         <div class="card-body">
-          <p class="text-muted">{% trans 'Enter your ticket number and email to view the status of your support request.' %}</p>
-          <form method="get" action="/helpdesk/">
-            <div class="mb-2">
-              <label class="form-label" for="ticket_id">{% trans 'Ticket ID' %}</label>
-              <input type="text" class="form-control" id="ticket_id" name="ticket_id" placeholder="e.g., 12345" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label" for="ticket_email">{% trans 'Email Address' %}</label>
-              <input type="email" class="form-control" id="ticket_email" name="email" placeholder="your@email.com" required>
-            </div>
-            <button type="submit" class="btn btn-secondary w-100">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M9 12h6" /><path d="M12 9v6" /></path></svg>
-              {% trans 'Check Status' %}
-            </button>
-          </form>
+          <p class="text-muted mb-0">{% trans 'For your privacy, open the secure ticket link sent to the email address used when submitting the request.' %}</p>
         </div>
       </div>
 
