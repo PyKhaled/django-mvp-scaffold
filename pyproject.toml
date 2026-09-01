@@ -18,7 +18,7 @@ base = [
     "django-simple-history==3.10.1",
     "jsonfield==3.1.0",
     "openai==2.43.0",
-    "pillow==11.3.0",
+    "pillow==12.3.0",
     "pydantic==2.13.4",
     "setuptools<81",
     "sorl-thumbnail==12.11.0",
