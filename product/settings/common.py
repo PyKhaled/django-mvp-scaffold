@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.humanize',
 
-
     'maintenance_mode',
     'helpdesk',
     'product.accounts.apps.AccountsConfig',
@@ -44,16 +43,7 @@ INSTALLED_APPS = [
     'hijack',
     'hijack.contrib.admin',
     'simple_history',
-
-
-    # # 'sorl.thumbnail',
-    # # 'easy_thumbnails',
-    # # 'imperavi',
-    # # 'tinymce',
-    # # 'newsletter',
-
-
-] 
+]
 
 
 MIDDLEWARE = [
@@ -247,12 +237,6 @@ HELPDESK_TICKETS_TIMELINE_ENABLED = False
 # private object storage. Keep them disabled while MEDIA_URL is publicly served.
 HELPDESK_ENABLE_ATTACHMENTS = False
 
-# NEWSLETTER
+# NEWSLETTER - Removed (unused dependency)
 # https://django-newsletter.readthedocs.io/
 
-# NEWSLETTER_THUMBNAIL = 'sorl-thumbnail'
-# NEWSLETTER_RICHTEXT_WIDGET = "imperavi.widget.ImperaviWidget"
-# NEWSLETTER_CONFIRM_EMAIL = False
-# NEWSLETTER_BATCH_DELAY = 60
-# NEWSLETTER_BATCH_SIZE = 100
-# NEWSLETTER_USE_HTTPS = True
