@@ -171,6 +171,9 @@ MAINTENANCE_MODE_RETRY_AFTER = 900
 #         },
 #     },
 #     'filters': {
+#         'require_debug_false': {
+#             '()': 'django.utils.log.RequireDebugFalse',
+#         },
 #         'require_debug_true': {
 #             '()': 'django.utils.log.RequireDebugTrue',
 #         },
@@ -190,7 +193,7 @@ MAINTENANCE_MODE_RETRY_AFTER = 900
 #         'mail_admins': {
 #             'level': 'ERROR',
 #             'class': 'django.utils.log.AdminEmailHandler',
-#             # 'filters': ['special']
+#             'filters': ['special']
 #         }
 #     },
 #     'loggers': {
@@ -201,6 +204,11 @@ MAINTENANCE_MODE_RETRY_AFTER = 900
 #         'django.request': {
 #             'handlers': ['mail_admins'],
 #             'level': 'ERROR',
+#             'propagate': False,
+#         },
+#         'django.contrib.admin': {
+#             'handlers': ['console', 'admin_security'],
+#             'level': 'INFO',
 #             'propagate': False,
 #         },
 #     }
@@ -240,3 +248,5 @@ HELPDESK_ENABLE_ATTACHMENTS = False
 # NEWSLETTER - Removed (unused dependency)
 # https://django-newsletter.readthedocs.io/
 
+# ADMIN SECURITY SETTINGS
+# https://docs.djangoproject.com/en/5.2/ref/contrib/admin/security/

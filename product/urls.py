@@ -6,17 +6,20 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
+
 admin.site.site_title = "Product admin"
 admin.site.site_header = "Product administration"
+admin.site.index_title = "Administration"
 
 sitemaps = {
     "flatpages": FlatPageSitemap,
 }
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('admin/doc/', include('django.contrib.admindocs.urls')),
-
+    
+    path('management/admin/', admin.site.urls),
+    path('management/admin/doc/', include('django.contrib.admindocs.urls')),
+    
     path('hijack/', include('hijack.urls')),
 
     path('maintenance-mode/', include('maintenance_mode.urls')),

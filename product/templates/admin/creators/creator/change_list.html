@@ -1,8 +1,0 @@
-{% extends "admin/change_list.html" %}
-
-{% block object-tools-items %}
-  {% if has_add_permission %}
-    <li><a href="{% url 'admin:creators_creator_import_csv' %}">Import CSV</a></li>
-  {% endif %}
-  {{ block.super }}
-{% endblock %}
