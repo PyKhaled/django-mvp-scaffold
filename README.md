@@ -1,148 +1,192 @@
-# Product 
+# Django MVP Scaffold
 
-A Django application foundation for CreativeBatch, a buyer-first creative production and scaling platform focused first on UGC production.
+An opinionated Django baseline for turning a product idea into a working MVP.
+It provides the common foundation—accounts, administration, support,
+notifications, maintenance controls, production settings, and a cohesive UI—so
+development can begin with the product's core workflow instead of repeating
+project setup.
 
-CreativeBatch is not intended to be a public influencer marketplace. The product direction is creative infrastructure for helping buyers and operators move from brief creation to manual creator matching, creator delivery, revisions, approvals, usage rights, and final asset delivery.
+The repository is both a reusable scaffold and a starting implementation. Its
+current templates use **CreativeBatch**, a buyer-first creative-production
+product, as the example identity. Replace that branding and build the product
+idea's domain models, workflows, and language on top of the foundation.
 
-The current codebase is an early-stage product foundation. It includes authentication screens, an admin-customized user model experience, creator profiles, campaign/submission models, a static messages page, a dashboard shell, and a Tabler-based UI.
+## Project status
 
-## Documentation
+The reusable foundation currently includes:
 
-- [Product Overview](docs/PRODUCT_OVERVIEW.md) summarizes the CreativeBatch product concept, target users, current capabilities, gaps, and near-term priorities.
-- [Product Scope](docs/PRODUCT_SCOPE.md) separates what exists today from the MVP buyer -> creator -> asset delivery workflow still to build.
-- [Architecture](docs/ARCHITECTURE.md) explains the Django apps, models, routes, templates, and current implementation status.
-- [Development](docs/DEVELOPMENT.md) explains local setup, environment variables, Docker, tests, and seed data.
+- Authentication, password recovery, profiles, and account settings.
+- User metadata and customized Django administration.
+- Public support requests and a staff-only helpdesk, with secure links for
+  customers to follow their tickets.
+- Notifications and staff user impersonation.
+- Maintenance mode with a custom `503` response.
+- Flat pages, a sitemap, and a public landing page.
+- A shared, locally hosted Tabler UI shell.
 
-## MVP Direction
+Product-specific domain logic is intentionally light. The scaffold provides
+the surrounding application infrastructure; each MVP still needs its own
+models, workflows, permissions, and tests.
 
-The first usable product should prioritize:
+## Quick start
 
-- Buyer brief creation.
-- Manual creator matching.
-- Creator acceptance or rejection of briefs.
-- Creator draft and final asset upload.
-- Buyer review, revision requests, and approvals.
-- Usage rights and final asset delivery.
-- Internal admin/operator tracking.
-
-The MVP should avoid overbuilding automated matching, advanced analytics, AI creative generation, high-end production booking, complex workspaces, or public marketplace positioning before the core workflow works.
-
-## Quick Start
+You need Python 3.12 or newer and a version of `pip` that supports dependency
+groups. The repository includes a `.python-version` file for compatible Python
+version managers.
 
 ```bash
-python -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
-pip install --group dev
+python -m pip install --upgrade pip
+python -m pip install --group dev
 python manage.py migrate
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/.
+Open <http://127.0.0.1:8000/>. Development is the default environment and uses
+SQLite, Django's console email backend, and the debug toolbar.
 
-## Maintenance Mode
+Create an administrator when you need access to Django admin or the staff
+helpdesk:
 
-Turn maintenance mode on or off without restarting Django:
+```bash
+python manage.py createsuperuser
+```
+
+Public support requests require at least one queue with public submission
+enabled. Create the queue in Django admin before testing that flow.
+
+## Tests and checks
+
+```bash
+python manage.py check
+python manage.py makemigrations --check --dry-run
+python manage.py test
+python manage.py collectstatic --noinput --dry-run
+```
+
+## Configuration
+
+`DJANGO_ENV` chooses the settings module:
+
+- `development` is the default and uses SQLite.
+- `production` uses PostgreSQL, Redis, Google Cloud Storage, and SMTP.
+
+Common settings:
+
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `DJANGO_ENV` | Runtime environment | `development` |
+| `SECRET_KEY` | Django signing key | Random in development; required in production |
+| `ALLOWED_HOSTS` | Comma-separated hostnames | Unrestricted in development; required in production |
+
+Production requires these additional variables:
+
+| Variable | Purpose |
+| --- | --- |
+| `POSTGRES_DB` | PostgreSQL database name |
+| `POSTGRES_USER` | PostgreSQL user |
+| `POSTGRES_PASSWORD` | PostgreSQL password |
+| `GS_BUCKET_NAME` | Google Cloud Storage bucket for media and static files |
+| `EMAIL_HOST` | SMTP server hostname |
+
+Optional production settings include `POSTGRES_HOST` (default `localhost`),
+`POSTGRES_PORT` (default `5432`), SMTP credentials and TLS settings, and Django
+HTTPS/HSTS controls. Boolean values accept `true`/`false`, `yes`/`no`,
+`on`/`off`, or `1`/`0`; invalid values stop startup.
+
+Production enables secure session and CSRF cookies, HTTPS redirection, and
+one year of HSTS by default. Set `TRUST_X_FORWARDED_PROTO=true` only when a
+trusted reverse proxy removes client-supplied forwarding headers and sets
+`X-Forwarded-Proto` itself. HSTS subdomains and preload remain opt-in through
+`SECURE_HSTS_INCLUDE_SUBDOMAINS` and `SECURE_HSTS_PRELOAD`.
+
+The production settings expect Redis at `redis://redis:6379`, using separate
+databases for general caching and maintenance state. Google Cloud credentials
+must also be available to the storage client in the deployment environment.
+
+Install the production dependency group before running deployment commands:
+
+```bash
+python -m pip install --group production
+DJANGO_ENV=production python manage.py check --deploy
+```
+
+## Main routes
+
+| Route | Description |
+| --- | --- |
+| `/` | Public landing page |
+| `/accounts/login/` | Sign in |
+| `/accounts/profile/` | Authenticated profile |
+| `/accounts/settings/profile/` | Profile settings |
+| `/accounts/settings/password/` | Password settings |
+| `/accounts/settings/appearance/` | Tabler appearance settings |
+| `/help/` | Public support and staff helpdesk flows |
+| `/management/admin/` | Django administration |
+| `/management/admin/doc/` | Django admin documentation |
+| `/sitemap.xml` | Flat-page sitemap |
+
+## Maintenance mode
+
+Toggle maintenance mode without restarting Django:
 
 ```bash
 python manage.py maintenance_mode on
 python manage.py maintenance_mode off
 ```
 
-Anonymous visitors receive the custom `503.html` page with a 15-minute
-`Retry-After` header. The admin site and authenticated superusers remain
+Anonymous visitors receive the custom maintenance page with a 15-minute
+`Retry-After` value. Django admin and authenticated superusers remain
 available. Superusers can also use `/maintenance-mode/on/` and
 `/maintenance-mode/off/`.
 
-The default state backend stores its flag in `maintenance_mode_state.txt` at
-the project root. For a multi-instance deployment, configure the package's
-cache backend with a cache shared by every web instance.
+Development stores the flag in the ignored `maintenance_mode_state.txt` file.
+Production uses Redis so that all application instances share the same state.
 
-## Main Routes
+## Frontend
 
-- `/` - public landing page
-- `/accounts/login/` - login
-- `/accounts/profile/` - logged-in user profile shell
-- `/accounts/settings/profile/` - account settings shell
+The interface uses a local [Tabler](https://github.com/tabler/tabler) 1.4.0
+build and does not need a frontend CDN or Node.js at runtime. Only the runtime
+files referenced by the application are kept in `product/static/`.
 
-- `/dashboard/` - authenticated dashboard shell
-- `/creators/` - creator list/search foundation
-- `/campaigns/` - campaign list page
-- `/messages/` - static messages UI
-- `/admin/` - Django admin
+Shared integration points:
 
-## Project Layout
+- `product/templates/layout/tabler_head.html` loads Tabler and application
+  styles.
+- `product/templates/layout/tabler_scripts.html` loads Tabler JavaScript.
+- `product/templates/layout/brand.html` defines the example product wordmark.
+- `product/static/css/app.css` contains product-specific styles layered over
+  Tabler.
+
+Upgrade the pinned Tabler files deliberately and test every shared shell when
+adopting a new release.
+
+## Project layout
 
 ```text
-accounts/      Authentication templates, user admin customization, user metadata
-campaigns/     Campaign, submission, and submission version models
-chat/          Messages route and current static message UI
-creators/      Creator profiles, addresses, reviews, factories, seed command
-dashboard/     Authenticated dashboard and request debug page
-product/       Django project settings, URL routing, ASGI/WSGI entry points
-templates/     Shared base, landing, layout, flatpage, and notification templates
-static/        Vendored Tabler CSS/JS and frontend assets
-theme/         Vendored Tabler source package; do not place app logic here
+manage.py                  Django command entry point
+pyproject.toml             Python requirements and dependency groups
+product/
+├── accounts/              Authentication, profiles, user metadata, and tests
+├── settings/              Common, development, and production settings
+├── static/                Runtime Tabler and product-specific assets
+├── templates/             Shared, landing, helpdesk, and integration templates
+├── urls.py                Root URL configuration
+├── asgi.py                ASGI entry point
+└── wsgi.py                WSGI entry point
 ```
 
+## Starting a product
 
-## Compose file 
+Use the scaffold as a baseline rather than a finished product:
 
+1. Define the smallest end-to-end workflow that proves the idea.
+2. Replace the CreativeBatch name, copy, and visual identity.
+3. Add the domain models and migrations for that workflow.
+4. Implement the customer and operator paths needed to complete it.
+5. Add permission, validation, and workflow tests alongside the feature.
+6. Configure the production services and run Django's deployment checks.
 
-```yaml
-services:
-  django:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    restart: unless-stopped
-
-  postgres:
-    image: postgres:16-alpine
-    env_file:
-      - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-django} -d ${POSTGRES_DB:-django}"
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-    restart: unless-stopped
-
-  redis:
-    image: redis:7-alpine
-    volumes:
-      - redis_data:/data
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
-    restart: unless-stopped
-
-volumes:
-  postgres_data:
-  redis_data:
-```
-
-
-## Notes
-
-This repository uses Django 4.2. Development uses SQLite by default. Production settings are configured for PostgreSQL, SMTP email, and Google Cloud Storage-style static/media URLs, but those production dependencies need verification before deployment. See [Development](docs/DEVELOPMENT.md) for details.
+Keep secondary workflows, automation, and advanced analytics out of scope
+until the MVP's primary path works end to end.
