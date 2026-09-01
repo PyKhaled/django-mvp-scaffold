@@ -4,7 +4,7 @@ A Django application foundation for CreativeBatch, a buyer-first creative produc
 
 CreativeBatch is not intended to be a public influencer marketplace. The product direction is creative infrastructure for helping buyers and operators move from brief creation to manual creator matching, creator delivery, revisions, approvals, usage rights, and final asset delivery.
 
-The current codebase is an early-stage product foundation. It includes authentication screens, an admin-customized user model experience, creator profiles, campaign/submission models, a static messages page, a dashboard shell, and a Tabler-based UI.
+The current codebase is an early-stage product foundation. It includes authentication screens, an admin-customized user model experience, customer support flows, a public landing page, and a shared Tabler-based UI shell.
 
 ## Documentation
 
@@ -63,25 +63,33 @@ cache backend with a cache shared by every web instance.
 - `/accounts/login/` - login
 - `/accounts/profile/` - logged-in user profile shell
 - `/accounts/settings/profile/` - account settings shell
-
-- `/dashboard/` - authenticated dashboard shell
-- `/creators/` - creator list/search foundation
-- `/campaigns/` - campaign list page
-- `/messages/` - static messages UI
+- `/help/` - customer support and ticket submission
 - `/admin/` - Django admin
+
+## Frontend UI
+
+The interface uses a locally vendored [Tabler](https://github.com/tabler/tabler)
+1.4.0 build. The runtime bundle is intentionally small: the canonical static
+tree contains Tabler core, Tabler themes, and the application styles actually
+referenced by templates. It does not depend on a CDN.
+
+Shared integration points live in:
+
+- `product/templates/layout/tabler_head.html` for styles and early theme setup.
+- `product/templates/layout/tabler_scripts.html` for Tabler JavaScript.
+- `product/templates/layout/brand.html` for the shared CreativeBatch brand.
+- `product/static/css/app.css` for product-specific styles layered over Tabler.
+
+Upgrade the pinned Tabler files deliberately and test the shared shells before
+adopting a new release; Tabler publishes breaking changes in its upgrade guide.
 
 ## Project Layout
 
 ```text
-accounts/      Authentication templates, user admin customization, user metadata
-campaigns/     Campaign, submission, and submission version models
-chat/          Messages route and current static message UI
-creators/      Creator profiles, addresses, reviews, factories, seed command
-dashboard/     Authenticated dashboard and request debug page
-product/       Django project settings, URL routing, ASGI/WSGI entry points
-templates/     Shared base, landing, layout, flatpage, and notification templates
-static/        Vendored Tabler CSS/JS and frontend assets
-theme/         Vendored Tabler source package; do not place app logic here
+product/accounts/   Authentication views, templates, and user metadata
+product/settings/   Environment-specific Django settings
+product/templates/  Shared base, landing, helpdesk, and layout templates
+product/static/     Runtime Tabler CSS/JS and CreativeBatch styles
 ```
 
 
