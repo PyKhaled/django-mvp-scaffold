@@ -1,6 +1,6 @@
-from django.core.mail import send_mail, EmailMessage
-from django.template.loader import render_to_string
 from django.conf import settings
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 
 class WelcomeEmailMessage(EmailMessage):
@@ -13,4 +13,9 @@ class WelcomeEmailMessage(EmailMessage):
         })
         recipient_list = [user.email]
 
-        super().__init__(subject=subject, body=body, from_email=settings.DEFAULT_FROM_EMAIL, to=recipient_list)
+        super().__init__(
+            subject=subject,
+            body=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=recipient_list,
+        )

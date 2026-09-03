@@ -24,14 +24,20 @@ def environment_boolean(name, default=False):
 DEBUG = False
 
 SECRET_KEY = required_environment_value("SECRET_KEY")
+if len(SECRET_KEY) < 50:
+    raise RuntimeError("SECRET_KEY must contain at least 50 characters in production")
 
-INSTALLED_APPS += [
-
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in required_environment_value("ALLOWED_HOSTS").split(",")
+    if host.strip()
 ]
-
-MIDDLEWARE += [
-    
-]
+if not ALLOWED_HOSTS:
+    raise RuntimeError("ALLOWED_HOSTS must contain at least one hostname")
+DEFAULT_FROM_EMAIL = required_environment_value("DEFAULT_FROM_EMAIL")
+SITE_DOMAIN = required_environment_value("SITE_DOMAIN")
+SITE_NAME = os.environ.get("SITE_NAME", SITE_DOMAIN).strip() or SITE_DOMAIN
+HELPDESK_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -107,16 +113,19 @@ if environment_boolean("TRUST_X_FORWARDED_PROTO"):
 # Public ticket access is provided by the secret-key-protected integration
 # route rather than django-helpdesk's email-only public view.
 HELPDESK_VIEW_A_TICKET_PUBLIC = False
+HELPDESK_USE_HTTPS_IN_EMAIL_LINK = True
+
+REDIS_URL = required_environment_value("REDIS_URL").rstrip("/")
 
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://redis:6379/0",
+        "LOCATION": os.environ.get("CACHE_REDIS_URL", f"{REDIS_URL}/0"),
     },
 
     "maintenance_mode": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": os.environ.get("MAINTENANCE_REDIS_URL", f"{REDIS_URL}/1"),
     },
 }
 

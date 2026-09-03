@@ -1,6 +1,7 @@
-from pathlib import Path
-from django.core.management.utils import get_random_secret_key
 import os
+from pathlib import Path
+
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -18,6 +19,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 # DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "webmaster@localhost")
+SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "localhost:8000")
+SITE_NAME = os.environ.get("SITE_NAME", "Product")
 
 
 # Application definition
@@ -36,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.humanize',
 
+    'bootstrap4form',
     'maintenance_mode',
     'helpdesk',
     'product.accounts.apps.AccountsConfig',
@@ -245,6 +250,14 @@ HELPDESK_STAFF_ONLY_TICKET_OWNERS = True
 HELPDESK_STAFF_ONLY_TICKET_CC = True
 HELPDESK_CREATE_TICKET_HIDE_ASSIGNED_TO = True
 HELPDESK_TICKETS_TIMELINE_ENABLED = False
+HELPDESK_API_ENABLED = False
+HELPDESK_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL
+HELPDESK_PUBLIC_SUBMISSION_RATE_LIMIT = int(
+    os.environ.get("HELPDESK_PUBLIC_SUBMISSION_RATE_LIMIT", "10")
+)
+HELPDESK_PUBLIC_SUBMISSION_RATE_WINDOW = int(
+    os.environ.get("HELPDESK_PUBLIC_SUBMISSION_RATE_WINDOW", "60")
+)
 
 # Uploaded ticket attachments must be served through an authenticated view or
 # private object storage. Keep them disabled while MEDIA_URL is publicly served.

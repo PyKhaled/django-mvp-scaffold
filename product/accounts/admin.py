@@ -1,10 +1,11 @@
 from django.contrib import admin, messages
-from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin, GroupAdmin as DjangoGroupAdmin
+from django.contrib.auth.admin import GroupAdmin as DjangoGroupAdmin
+from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from hijack.contrib.admin import HijackUserAdminMixin
-from product.accounts.models import User, Group, UserInformation
 
+from product.accounts.models import User, UserInformation
 
 admin.site.unregister(User)
 admin.site.unregister(Group)

@@ -1,14 +1,13 @@
-from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
-from django.contrib.flatpages.sitemaps import FlatPageSitemap
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.contrib.flatpages.sitemaps import FlatPageSitemap
+from django.contrib.sitemaps.views import sitemap
+from django.urls import include, path
 from django.views.generic import TemplateView
 from helpdesk.decorators import protect_view
 
 from product.helpdesk_views import SecurePublicTicketView
-
 
 admin.site.site_title = "Product admin"
 admin.site.site_header = "Product administration"
@@ -36,7 +35,7 @@ urlpatterns = [
     # This route must precede django-helpdesk's URL include so blank legacy
     # secret keys cannot bypass anonymous ticket authorization.
     path('help/view/', protect_view(SecurePublicTicketView.as_view())),
-    path('help/', include('helpdesk.urls')),
+    path('help/', include('product.helpdesk_urls')),
 
     path('', TemplateView.as_view(template_name='landing.html')),
     path('', include('django.contrib.flatpages.urls')),

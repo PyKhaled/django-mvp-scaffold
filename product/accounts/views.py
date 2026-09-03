@@ -1,12 +1,11 @@
 from django.contrib import messages
-from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 
 from product.accounts.forms import ProfileForm
-
 
 User = get_user_model()
 
