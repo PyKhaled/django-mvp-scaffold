@@ -27,6 +27,14 @@ SECRET_KEY = required_environment_value("SECRET_KEY")
 if len(SECRET_KEY) < 50:
     raise RuntimeError("SECRET_KEY must contain at least 50 characters in production")
 
+INSTALLED_APPS += [
+
+]
+
+MIDDLEWARE += [
+
+]
+
 ALLOWED_HOSTS = [
     host.strip()
     for host in required_environment_value("ALLOWED_HOSTS").split(",")

@@ -127,10 +127,6 @@ python -m pip install --group production
 DJANGO_ENV=production python manage.py check --deploy
 ```
 
-For reproducible environments, install `requirements/dev.lock` locally and
-`requirements/production.lock` in deployment. Regenerate both lock files after
-changing `pyproject.toml` and review transitive upgrades before committing them.
-
 `entrypoint.sh` performs the deployment check, static collection, and database
 migrations before replacing itself with Gunicorn. It exits immediately if any
 step fails and accepts `PORT` and `WEB_CONCURRENCY` overrides.
