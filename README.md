@@ -56,6 +56,15 @@ python manage.py createsuperuser
 Public support requests require at least one queue with public submission
 enabled. Create the queue in Django admin before testing that flow.
 
+Public ticket access requires the per-ticket capability sent to the submitter.
+Closing a resolved ticket is a CSRF-protected action. The dependency's
+email-owned "My Tickets" page and `user_tickets` API route are disabled because
+product account email addresses are editable; the staff-only API remains
+available.
+Anonymous ticket creation is limited across every public submission route;
+configure `HELPDESK_PUBLIC_SUBMISSION_RATE_LIMIT` and
+`HELPDESK_PUBLIC_SUBMISSION_RATE_WINDOW` to tune the per-address fixed window.
+
 ## Tests and checks
 
 ```bash
@@ -79,6 +88,9 @@ Common settings:
 | `DJANGO_ENV` | Runtime environment | `development` |
 | `SECRET_KEY` | Django signing key | Random in development; required in production |
 | `ALLOWED_HOSTS` | Comma-separated hostnames | Unrestricted in development; required in production |
+| `DEFAULT_FROM_EMAIL` | Sender for application email | `webmaster@localhost`; required in production |
+| `SITE_DOMAIN` | Canonical host used in generated links | `localhost:8000`; required in production |
+| `SITE_NAME` | Human-readable site name | `Product` or `SITE_DOMAIN` |
 
 Production requires these additional variables:
 
@@ -89,11 +101,13 @@ Production requires these additional variables:
 | `POSTGRES_PASSWORD` | PostgreSQL password |
 | `GS_BUCKET_NAME` | Google Cloud Storage bucket for media and static files |
 | `EMAIL_HOST` | SMTP server hostname |
+| `REDIS_URL` | Redis base URL without a database suffix |
 
 Optional production settings include `POSTGRES_HOST` (default `localhost`),
-`POSTGRES_PORT` (default `5432`), SMTP credentials and TLS settings, and Django
-HTTPS/HSTS controls. Boolean values accept `true`/`false`, `yes`/`no`,
-`on`/`off`, or `1`/`0`; invalid values stop startup.
+`POSTGRES_PORT` (default `5432`), SMTP credentials and TLS settings,
+`CACHE_REDIS_URL`, `MAINTENANCE_REDIS_URL`, and Django HTTPS/HSTS controls.
+Boolean values accept `true`/`false`, `yes`/`no`, `on`/`off`, or `1`/`0`;
+invalid values stop startup.
 
 Production enables secure session and CSRF cookies, HTTPS redirection, and
 one year of HSTS by default. Set `TRUST_X_FORWARDED_PROTO=true` only when a
@@ -101,9 +115,10 @@ trusted reverse proxy removes client-supplied forwarding headers and sets
 `X-Forwarded-Proto` itself. HSTS subdomains and preload remain opt-in through
 `SECURE_HSTS_INCLUDE_SUBDOMAINS` and `SECURE_HSTS_PRELOAD`.
 
-The production settings expect Redis at `redis://redis:6379`, using separate
-databases for general caching and maintenance state. Google Cloud credentials
-must also be available to the storage client in the deployment environment.
+The production settings derive separate general-cache and maintenance-state
+databases from `REDIS_URL`. Override either complete URL when those databases
+live on different services. Google Cloud credentials must also be available to
+the storage client in the deployment environment.
 
 Install the production dependency group before running deployment commands:
 
@@ -111,6 +126,14 @@ Install the production dependency group before running deployment commands:
 python -m pip install --group production
 DJANGO_ENV=production python manage.py check --deploy
 ```
+
+For reproducible environments, install `requirements/dev.lock` locally and
+`requirements/production.lock` in deployment. Regenerate both lock files after
+changing `pyproject.toml` and review transitive upgrades before committing them.
+
+`entrypoint.sh` performs the deployment check, static collection, and database
+migrations before replacing itself with Gunicorn. It exits immediately if any
+step fails and accepts `PORT` and `WEB_CONCURRENCY` overrides.
 
 ## Main routes
 

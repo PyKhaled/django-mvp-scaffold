@@ -4,10 +4,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>{% block head_title %}Helpdesk{% endblock %} · CreativeBatch</title>
+  <title>{% block head_title %}{% block helpdesk_title %}Helpdesk{% endblock %}{% endblock %} · CreativeBatch</title>
   {% include 'layout/tabler_head.html' %}
   <link rel="stylesheet" href="{% static 'css/helpdesk.css' %}">
-  {% block page_styles %}{% endblock %}
+  {% block page_styles %}{% block helpdesk_head %}{% endblock %}{% endblock %}
 </head>
 <body class="layout-fluid">
   <div class="page">
@@ -21,6 +21,9 @@
             <div class="col">
               <div class="page-pretitle">{% block page_pretitle %}Support{% endblock %}</div>
               <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+              <ol class="breadcrumb breadcrumb-arrows mt-2 mb-0">
+                {% block helpdesk_breadcrumb %}{% endblock %}
+              </ol>
             </div>
             <div class="col-auto ms-auto d-print-none">
               <div class="btn-list">{% block page_actions %}{% endblock %}</div>
@@ -30,7 +33,7 @@
       </div>
 
       <main class="page-body">
-        <div class="container-xl">{% block page_content %}{% endblock %}</div>
+        <div class="container-xl">{% block page_content %}{% block helpdesk_body %}{% endblock %}{% endblock %}</div>
       </main>
 
       {% include 'layout/footer.html' %}
@@ -38,6 +41,6 @@
   </div>
 
   {% include 'layout/tabler_scripts.html' %}
-  {% block page_scripts %}{% endblock %}
+  {% block page_scripts %}{% block helpdesk_js %}{% endblock %}{% endblock %}
 </body>
 </html>

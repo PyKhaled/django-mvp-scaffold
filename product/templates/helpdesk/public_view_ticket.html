@@ -46,6 +46,13 @@
           <h4 class="mb-2">{% trans 'Description' %}</h4>
           <p class="text-secondary">{{ ticket.description|linebreaks }}</p>
         </div>
+        {% if ticket.resolution %}
+        <div class="divider"></div>
+        <div>
+          <h4 class="mb-2">{% trans 'Resolution' %}</h4>
+          <p class="text-secondary">{{ ticket.resolution|linebreaks }}</p>
+        </div>
+        {% endif %}
       </div>
     </div>
 
@@ -130,6 +137,13 @@
     </div>
 
     <!-- Actions -->
+    {% if ticket.status == ticket.RESOLVED_STATUS %}
+    <form method="post" class="mb-2">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="close">
+      <button type="submit" class="btn btn-primary w-100">{% trans 'Accept resolution and close' %}</button>
+    </form>
+    {% endif %}
     <a href="{% url 'helpdesk:home' %}" class="btn btn-secondary w-100">
       <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l-6 6l6 6" /><path d="M15 12h-12" /></path></svg>
       {% trans 'Back to Support' %}
