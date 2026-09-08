@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
-
 from django.core.management.utils import get_random_secret_key
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -19,9 +19,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 # DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "webmaster@localhost")
-SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "localhost:8000")
-SITE_NAME = os.environ.get("SITE_NAME", "Product")
 
 
 # Application definition
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.flatpages',
     'django.contrib.humanize',
+    'django.contrib.redirects',
 
     'bootstrap4form',
     'maintenance_mode',
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     'hijack.middleware.HijackUserMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
     'maintenance_mode.middleware.MaintenanceModeMiddleware',
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
 ]
 
 ROOT_URLCONF = 'product.urls'
@@ -122,12 +124,29 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+LOGIN_REDIRECT_URL = "/dashboard/"
+
+
+# Django sites framework
+# https://docs.djangoproject.com/en/5.2/ref/contrib/sites/
+
+SITE_ID = 1
+SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "localhost:8000")
+SITE_NAME = os.environ.get("SITE_NAME", SITE_DOMAIN).strip() or SITE_DOMAIN
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('en', 'English'),
+    ('ar', 'Arabic'),
+]
 
-TIME_ZONE = 'UTC'
+LOCALE_PATHS = [SOURCE_DIR / 'locale']
+
+TIME_ZONE = 'Africa/Cairo'
 
 USE_I18N = True
 
@@ -144,19 +163,6 @@ STATICFILES_DIRS = [SOURCE_DIR / 'static']
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-OPENAI_APPEARANCE_MODEL = os.environ.get("OPENAI_APPEARANCE_MODEL", "gpt-5")
-
-
-# Maintenance mode
-# Toggle at runtime with: python manage.py maintenance_mode <on|off>
-MAINTENANCE_MODE = None
-MAINTENANCE_MODE_STATE_BACKEND = "maintenance_mode.backends.LocalFileBackend"
-MAINTENANCE_MODE_STATE_FILE_PATH = str(BASE_DIR / "maintenance_mode_state.txt")
-MAINTENANCE_MODE_IGNORE_ADMIN_SITE = True
-MAINTENANCE_MODE_IGNORE_SUPERUSER = True
-MAINTENANCE_MODE_IGNORE_TESTS = True
-MAINTENANCE_MODE_RETRY_AFTER = 900
 
 
 # Logging
@@ -208,63 +214,95 @@ MAINTENANCE_MODE_RETRY_AFTER = 900
 #     },
 #     'loggers': {
 #         'django': {
-#             'handlers': ['console', 'file'],
+#             'handlers': ['console'],
 #             'propagate': True,
 #         },
 #         'django.request': {
-#             'handlers': ['mail_admins'],
+#             'handlers': ['console', 'mail_admins'],
 #             'level': 'ERROR',
+#             "level": "WARNING",
 #             'propagate': False,
+#         },
+#         "django.security": {
+#             "handlers": ["console"],
+#             "level": "WARNING",
+#             "propagate": False,
+#         },
+#         "django.db.backends": {
+#             "handlers": ["console"],
+#             "level": "WARNING",
+#             "propagate": False,
 #         },
 #         'django.contrib.admin': {
 #             'handlers': ['console', 'admin_security'],
 #             'level': 'INFO',
 #             'propagate': False,
 #         },
+#         "django.server": {
+#             "handlers": ["console"],
+#             "level": "INFO",
+#             "propagate": False,
+#         }
 #     }
 # }
 
-# LOGIN_REDIRECT_URL = "/dashboard/"
-
-# SESSION_COOKIE_SECURE = True
-# SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days
-# SESSION_EXPIRE_AT_BROWSER_CLOSE = False
-
-# CSRF_COOKIE_SECURE = True
 
 
-SITE_ID = 1
 
 # DJANGO HELPDESK
-# Teams mode requires the optional pinax-teams integration and is not needed
-# for CreativeBatch's user-based ticket assignment.
-HELPDESK_TEAMS_MODE_ENABLED = False
+# https://django-helpdesk.readthedocs.io/en/latest/configuration.html
 
-# Customers can submit and follow their own requests, but only employees marked
-# as staff in Django admin can access the operational helpdesk.
+HELPDESK_TEAMS_MODE_ENABLED = False
 HELPDESK_ALLOW_NON_STAFF_TICKET_UPDATE = False
 HELPDESK_NAVIGATION_ENABLED = False
 HELPDESK_SUBMIT_A_TICKET_PUBLIC = True
-HELPDESK_VIEW_A_TICKET_PUBLIC = True
+HELPDESK_VIEW_A_TICKET_PUBLIC = False
 HELPDESK_STAFF_ONLY_TICKET_OWNERS = True
 HELPDESK_STAFF_ONLY_TICKET_CC = True
 HELPDESK_CREATE_TICKET_HIDE_ASSIGNED_TO = True
 HELPDESK_TICKETS_TIMELINE_ENABLED = False
 HELPDESK_API_ENABLED = False
 HELPDESK_DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL
-HELPDESK_PUBLIC_SUBMISSION_RATE_LIMIT = int(
-    os.environ.get("HELPDESK_PUBLIC_SUBMISSION_RATE_LIMIT", "10")
-)
-HELPDESK_PUBLIC_SUBMISSION_RATE_WINDOW = int(
-    os.environ.get("HELPDESK_PUBLIC_SUBMISSION_RATE_WINDOW", "60")
-)
-
-# Uploaded ticket attachments must be served through an authenticated view or
-# private object storage. Keep them disabled while MEDIA_URL is publicly served.
+HELPDESK_USE_HTTPS_IN_EMAIL_LINK = True
+HELPDESK_PUBLIC_SUBMISSION_RATE_LIMIT = int(os.environ.get("HELPDESK_PUBLIC_SUBMISSION_RATE_LIMIT", "10"))
+HELPDESK_PUBLIC_SUBMISSION_RATE_WINDOW = int(os.environ.get("HELPDESK_PUBLIC_SUBMISSION_RATE_WINDOW", "60"))
 HELPDESK_ENABLE_ATTACHMENTS = False
 
-# NEWSLETTER - Removed (unused dependency)
-# https://django-newsletter.readthedocs.io/
 
-# ADMIN SECURITY SETTINGS
-# https://docs.djangoproject.com/en/5.2/ref/contrib/admin/security/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Maintenance mode
+# Toggle at runtime with: python manage.py maintenance_mode <on|off>
+
+MAINTENANCE_MODE = None
+MAINTENANCE_MODE_STATE_BACKEND = ("maintenance_mode.backends.CacheBackend")
+MAINTENANCE_MODE_CACHE_BACKEND = "maintenance_mode"
+MAINTENANCE_MODE_IGNORE_ADMIN_SITE = True
+MAINTENANCE_MODE_IGNORE_SUPERUSER = True
+MAINTENANCE_MODE_IGNORE_TESTS = True
+MAINTENANCE_MODE_RETRY_AFTER = 900
+
+
+
+
+
+

@@ -18,6 +18,7 @@ sitemaps = {
 }
 
 urlpatterns = [
+    path('i18n/', include('django.conf.urls.i18n')),
     
     path('management/admin/', admin.site.urls),
     path('management/admin/doc/', include('django.contrib.admindocs.urls')),

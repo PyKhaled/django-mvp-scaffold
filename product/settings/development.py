@@ -2,6 +2,8 @@ from .common import *
 
 DEBUG = True
 
+SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
+
 ALLOWED_HOSTS = ["*"]
 INTERNAL_IPS = ["127.0.0.1"]
 
@@ -24,7 +26,6 @@ DATABASES = {
 }
 
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
@@ -38,3 +39,4 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/4.2/topics/email/#smtp-backend
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
