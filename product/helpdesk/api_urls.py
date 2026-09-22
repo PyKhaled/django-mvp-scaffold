@@ -11,11 +11,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register("tickets", TicketViewSet, basename="ticket")
 router.register("followups", FollowUpViewSet, basename="followups")
-router.register(
-    "followups-attachments",
-    FollowUpAttachmentViewSet,
-    basename="followupattachments",
-)
+router.register("followups-attachments", FollowUpAttachmentViewSet, basename="followupattachments")
 router.register("users", CreateUserView, basename="user")
 
 urlpatterns = router.urls
