@@ -1,0 +1,44 @@
+site_name: Engineering Documentation
+site_description: Engineering, API, architecture and operational documentation
+
+theme:
+  name: material
+
+extra_css:
+  - https://unpkg.com/swagger-ui-dist@5/swagger-ui.css
+
+extra_javascript:
+  - https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js
+  - assets/js/swagger.js
+
+nav:
+  - Home: README.md
+
+  - Getting Started:
+      - Overview: getting-started/index.md
+
+  - Architecture:
+      - Overview: architecture/index.md
+      - System Overview: architecture/system-overview.md
+      - Decision Template: architecture/decisions/ADR-001.md
+
+  - API:
+      - Overview: api/index.md
+      - Swagger: api/swagger.html
+
+  - Runbooks:
+      - Overview: runbooks/index.md
+      - Local Development: runbooks/local-development.md
+      - Deployment and Rollback: runbooks/deployment.md
+      - Backup and Restore: runbooks/backup-restore.md
+      - Maintenance: runbooks/maintenance.md
+      - Support and Email: runbooks/support-email.md
+      - Incident Response: runbooks/incident-response.md
+
+  - Guides:
+      - Development: guides/development.md
+      - Deployment: guides/deployment.md
+
+  - Security:
+      - Overview: security/index.md
+      - Vulnerability Management: security/vulnerability-management.md
