@@ -1,28 +1,13 @@
-# API documentation
+# API scope
 
-Status: starter template.
+The application is primarily server-rendered Django. The helpdesk integration
+includes Django REST Framework routes under `/help/api/`, defined in
+`product/helpdesk/api_urls.py`. Review the included package view permissions and
+tests before exposing or extending them. The customer ticket listing is excluded;
+public ticket access uses capability-protected views rather than matching a
+mutable account email address.
 
-## Specification
-
-The [OpenAPI 3.1 specification](openapi.json) is a starting template containing
-example `/health` and `/users/{user_id}` paths. These are not implemented scaffold
-endpoints. Replace the examples with a verified contract before using it for
-integrations.
-
-## Interactive API reference
-
-When served as a web page, the **[Swagger API Reference](swagger.html)** displays
-the example specification and schemas. It does not establish a working API or
-verified operations.
-
-## Access and authentication
-
-TODO: document base URLs, authentication, authorization, and credential handling.
-
-## Errors, limits, and pagination
-
-TODO: define error formats, status codes, rate limits, and pagination semantics.
-
-## Compatibility and validation
-
-TODO: describe versioning, deprecation policy, and specification validation.
+No general product API, JWT authentication contract, or `/health` endpoint is
+promised. [Example OpenAPI and Swagger files](../templates/index.md) are adoption
+templates, not verified endpoint documentation. Define and test a real contract
+when adding your product API.

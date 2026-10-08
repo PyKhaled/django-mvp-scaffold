@@ -2,10 +2,10 @@
 
 ## Prerequisites
 
-Use Python 3.12 or newer and run from a checkout containing `manage.py`.
+Use Python 3.12 and run from a checkout containing `manage.py`.
 Check `git status --short` first to preserve existing work. No PostgreSQL, Redis,
 or cloud storage is needed for ordinary development checks; development uses
-SQLite and console email. Maintenance has a separate [known gap](index.md).
+SQLite and console email. Maintenance uses a file-backed local cache.
 
 ## Bootstrap
 
@@ -27,8 +27,7 @@ copying `.env.example` alone does not configure Django. Keep a stable local
 settings generate a new key when loaded. Never reuse a production key locally.
 
 Open `/`, `/accounts/login/`, `/accounts/profile/`, and `/management/admin/`.
-The profile requires login; admin requires staff permissions. Verify login itself
-and its redirect separately because `/dashboard/` is currently unresolved.
+The profile requires login; admin requires staff permissions. Verify login redirects to `/accounts/profile/`.
 Create a public queue before exercising [support](support-email.md).
 
 ## Validation before submission

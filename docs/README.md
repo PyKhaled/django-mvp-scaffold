@@ -1,28 +1,25 @@
-# Engineering documentation
+# Django MVP Scaffold documentation
 
-Documentation for Django MVP Scaffold. New section pages are starter templates;
-replace `TODO` entries with reviewed project details as the product develops.
+Build and customize the scaffold using the guides below. Operational procedures
+require validation against your own infrastructure.
 
-## Start here
+- [Getting started](getting-started/index.md): installation and first local run.
+- [Development](guides/development.md): changes, tests, and review.
+- [Customization](guides/customization.md): turn the example into your product.
+- [Configuration](configuration.md): environment variables and runtime roles.
+- [Architecture](architecture/system-overview.md): components and request flow.
+- [API scope](api/index.md): actual integration boundaries and example contracts.
+- [Runbooks](runbooks/index.md): deployment, maintenance, backup, support, incidents.
+- [Known issues](known-issues.md): current limitations and evidence boundaries.
+- [Releases](guides/releases.md): versioning, checks, and rollback notes.
+- [Security](security/index.md): private reporting and handling.
+- [Adoption templates](templates/index.md): worksheets for downstream products.
 
-- [Getting started](getting-started/index.md): prerequisites and first local run.
-- [Architecture](architecture/index.md): system boundaries and design decisions.
-- [API](api/index.md): API contract and specification status.
-- [Runbooks](runbooks/index.md): operational procedures and current blockers.
-- [Development guide](guides/development.md): contribution workflow.
-- [Deployment guide](guides/deployment.md): environment and release planning.
-- [Security](security/index.md): responsibilities and vulnerability handling.
+## Build and review
 
-## Documentation conventions
+From the repository root, install `python -m pip install --group docs` and run
+`mkdocs serve`. Before submission run `mkdocs build --strict` and inspect changed
+pages. CI builds documentation but does not publish a hosted site.
 
-Keep commands relative to the repository root. Record verification evidence and
-review dates for operational claims. Mark proposals and templates explicitly;
-production deployment and recovery require their own evidence.
-
-Store documentation images in `assets/images/` and link to them with relative paths.
-
-## Ownership
-
-- Documentation owner: TODO
-- Review cadence: TODO
-- Last reviewed: TODO
+Update docs in the same PR as behavior changes. Keep configuration defaults in
+sync with settings. Record revision and environment for operational evidence.

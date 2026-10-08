@@ -4,9 +4,8 @@
 
 Production uses Redis cache alias `maintenance_mode`; all replicas must use the
 same URL. Confirm Redis connectivity and record whether maintenance was already
-on. Development currently selects this backend without defining the alias:
-stop on `InvalidCacheBackendError` and correct that configuration before using
-these commands. The ignored state filename is not the active development backend.
+on. Development uses the file-backed `maintenance_mode` cache under `.cache/maintenance`,
+shared by management commands and the server on the same checkout.
 
 ## Enable and verify
 

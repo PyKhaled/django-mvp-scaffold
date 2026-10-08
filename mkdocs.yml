@@ -1,15 +1,11 @@
-site_name: Engineering Documentation
+site_name: Django MVP Scaffold
 site_description: Engineering, API, architecture and operational documentation
+# These are adoption documents, rather than theme templates.
+exclude_docs: |
+  !/templates/
 
 theme:
   name: material
-
-extra_css:
-  - https://unpkg.com/swagger-ui-dist@5/swagger-ui.css
-
-extra_javascript:
-  - https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js
-  - assets/js/swagger.js
 
 nav:
   - Home: README.md
@@ -20,11 +16,9 @@ nav:
   - Architecture:
       - Overview: architecture/index.md
       - System Overview: architecture/system-overview.md
-      - Decision Template: architecture/decisions/ADR-001.md
 
   - API:
       - Overview: api/index.md
-      - Swagger: api/swagger.html
 
   - Runbooks:
       - Overview: runbooks/index.md
@@ -37,8 +31,16 @@ nav:
 
   - Guides:
       - Development: guides/development.md
-      - Deployment: guides/deployment.md
+      - Customization: guides/customization.md
+      - Releases: guides/releases.md
 
   - Security:
       - Overview: security/index.md
       - Vulnerability Management: security/vulnerability-management.md
+
+  - Configuration: configuration.md
+  - Known Issues: known-issues.md
+  - Templates:
+      - Overview: templates/index.md
+      - Architecture Decision: templates/architecture-decision.md
+      - Deployment Planning: templates/deployment-planning.md

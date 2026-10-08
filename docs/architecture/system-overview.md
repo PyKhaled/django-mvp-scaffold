@@ -1,39 +1,31 @@
 # System overview
 
-Status: starter template; the repository map below is a starting point.
+The scaffold is a server-rendered Django application. URL routing dispatches to
+account views, helpdesk overrides, Django administration, and shared templates.
+It does not implement the creative-production workflow described in sample copy.
 
-## Purpose and scope
+## Components and request flow
 
-TODO: describe the product's main workflow and what lies outside its boundary.
+A request passes through security, session, authentication, CSRF, maintenance, and
+other configured middleware before the selected view renders a template or returns
+a helpdesk API response. Accounts use Django users with related user metadata.
+Helpdesk overrides retain capability checks and submission throttling; staff and
+public access paths have different permissions.
 
-## Repository components
+- `product/accounts/`: models, forms, account views, migrations, and tests.
+- `product/helpdesk/`: route overrides, ticket authorization, and API integration.
+- `product/settings/`: common and environment-specific configuration.
+- `product/templates/`, `product/static/`: shared UI and vendored Tabler assets.
 
-- `product/accounts/`: accounts, profiles, forms, and account tests.
-- `product/settings/`: common, development, and production settings.
-- `product/templates/` and `product/static/`: shared interface and local assets.
-- `product/urls.py`: application routing and integrations.
+## Runtime boundaries
 
-## Runtime and dependencies
+Development uses SQLite, console email, in-process general caching, and file-backed
+maintenance state. Production uses PostgreSQL, Redis, GCS, and SMTP behind a trusted
+HTTPS proxy. Gunicorn serves WSGI. A separate serialized release command applies
+migrations and collects static files; web processes do not do this on startup.
 
-Development uses SQLite and console email. Production settings target PostgreSQL,
-Redis, Google Cloud Storage, and SMTP. See the
-[deployment runbook](../runbooks/deployment.md) for current prerequisites and gaps.
-
-TODO: document deployed components, ownership, network boundaries, and protocols.
-
-## Request and data flow
-
-TODO: trace one representative request from client through application, storage,
-and external services. Add a diagram under `../assets/images/` when available.
-
-## Data ownership and trust boundaries
-
-TODO: identify authoritative stores, sensitive data, retention, and access controls.
-
-## Reliability and scaling
-
-TODO: record service objectives, capacity assumptions, failure modes, and recovery.
-
-## Related decisions
-
-See the [architecture decision template](decisions/ADR-001.md).
+Tickets, account details, reset URLs, and ticket capability links can contain
+sensitive data. Treat generated links as credentials. Operators must define media
+access, backup retention, network boundaries, and recovery objectives for their
+own deployment. See [deployment](../runbooks/deployment.md) and
+[known limits](../known-issues.md).

@@ -2,11 +2,9 @@
 
 ## Preconditions and stop conditions
 
-Resolve the applicable [implementation gaps](index.md) first. The locally observed
-container/startup drafts are uncommitted and excluded from this documentation
-update; no deployment-platform contract is established here. The commands below
-are the application-level sequence for a corrected release under an operator's
-service manager; they do not provision infrastructure or repair the Dockerfile.
+Review [known limits](../known-issues.md) and the [configuration reference](../configuration.md).
+The container provides separate web and release roles. Provision services and
+rehearse the following sequence before exposing production traffic.
 
 Identify the release revision, previous artifact, service restart/traffic-switch
 commands, PostgreSQL instance, Redis service, GCS bucket, SMTP provider, trusted
@@ -25,12 +23,12 @@ export DJANGO_ENV=production
 ```
 
 Inject credentials through the deployment's secret store. Required operational
-values (even when the source fails to enforce them) are:
+values and deployment decisions are:
 
 | Setting | Required value or decision |
 | --- | --- |
 | `SECRET_KEY` | Stable, strong random production signing key |
-| `ALLOWED_HOSTS` | One hostname with current parsing; no scheme or wildcard |
+| `ALLOWED_HOSTS` | Comma-separated hostnames; no scheme or wildcard |
 | `SITE_DOMAIN`, `SITE_NAME` | Public hostname and display name; migrations update Site row 1 |
 | `DEFAULT_FROM_EMAIL` | Sender accepted by the SMTP provider |
 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | Dedicated database and credentials |
@@ -51,7 +49,7 @@ must be reachable by every application instance. GCS serves `staticfiles/` and
 Secure cookies, HTTPS redirection, and one-year HSTS default on. Enable
 `TRUST_X_FORWARDED_PROTO=true` only behind a proxy that strips incoming forwarded
 headers and supplies its own. Review HSTS before serving the hostname; subdomains
-and preload are separate opt-ins. Invalid Boolean text can silently become false.
+and preload are separate opt-ins. Invalid Boolean text is rejected.
 
 ## Release sequence
 
@@ -78,7 +76,7 @@ and preload are separate opt-ins. Invalid Boolean text can silently become false
 
    Both migrations and static collection mutate shared services. Record completed
    operations; static upload failure does not undo a completed migration.
-5. Start the corrected application under the deployment's process manager. The
+5. Start the application under the deployment's process manager. The
    scaffold's WSGI target is:
 
    ```sh
