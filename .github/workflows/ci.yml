@@ -54,3 +54,5 @@ jobs:
           TARGET: ${{ matrix.target }}
       - if: matrix.target == 'dev'
         run: docker run --rm scaffold:ci python manage.py check
+      - if: matrix.target == 'dev'
+        run: docker run --rm scaffold:ci python manage.py test --noinput

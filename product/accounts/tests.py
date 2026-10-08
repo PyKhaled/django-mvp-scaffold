@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -897,6 +898,10 @@ class ProductionSettingsTests(SimpleTestCase):
 
     def test_entrypoint_is_fail_fast_and_non_interactive(self):
         entrypoint = self.project_root / "entrypoint.sh"
+        if not entrypoint.exists():
+            installed_entrypoint = shutil.which("entrypoint")
+            self.assertIsNotNone(installed_entrypoint, "Container entrypoint is missing")
+            entrypoint = Path(installed_entrypoint)
         contents = entrypoint.read_text()
 
         self.assertTrue(os.access(entrypoint, os.X_OK))
