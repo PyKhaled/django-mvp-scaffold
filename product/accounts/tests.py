@@ -2,6 +2,7 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 from urllib.parse import urlencode
 
@@ -46,6 +47,14 @@ class AccountsTests(TestCase):
         self.assertContains(response, "css/tabler.min.css")
         self.assertContains(response, "CreativeBatch")
         self.assertContains(response, 'name="remember_me"')
+
+    def test_login_without_next_redirects_to_accessible_profile(self):
+        response = self.client.post(
+            reverse("login"),
+            {"username": self.user.username, "password": "test-pass-123"},
+        )
+
+        self.assertRedirects(response, reverse("profile"))
 
     def test_landing_page_uses_creativebatch_tabler_ui(self):
         response = self.client.get("/")
@@ -772,6 +781,39 @@ class ProductionSettingsTests(SimpleTestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("SECRET_KEY environment variable is required", result.stderr)
+
+    def test_development_accepts_empty_example_secret_key(self):
+        env = os.environ.copy()
+        env.update({"DJANGO_ENV": "development", "SECRET_KEY": ""})
+        result = self.run_settings_import(
+            env,
+            "import django; django.setup(); "
+            "from django.conf import settings; assert len(settings.SECRET_KEY) >= 50",
+        )
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_development_maintenance_cache_is_shared_between_processes(self):
+        env = os.environ.copy()
+        env["DJANGO_ENV"] = "development"
+        with TemporaryDirectory() as cache_dir:
+            env["TEST_MAINTENANCE_CACHE_DIR"] = cache_dir
+            setup = (
+                "import os; from django.conf import settings; "
+                "settings.CACHES['maintenance_mode']['LOCATION'] = "
+                "os.environ['TEST_MAINTENANCE_CACHE_DIR']; "
+                "from django.core.cache import caches; "
+                "cache = caches['maintenance_mode']; "
+            )
+            writer = self.run_settings_import(
+                env, setup + "cache.set('maintenance-rehearsal', True)"
+            )
+            reader = self.run_settings_import(
+                env, setup + "assert cache.get('maintenance-rehearsal') is True"
+            )
+
+        self.assertEqual(writer.returncode, 0, writer.stderr)
+        self.assertEqual(reader.returncode, 0, reader.stderr)
 
     def test_production_rejects_whitespace_only_secret_key(self):
         env = self.production_env()

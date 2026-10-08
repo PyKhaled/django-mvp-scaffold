@@ -28,7 +28,7 @@ urlpatterns = [
 
     path("notifications/", include(("notifications.urls", "notifications"))),
 
-    path("help", include("product.helpdesk.urls")),
+    path("help/", include("product.helpdesk.urls")),
 
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
 

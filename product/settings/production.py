@@ -2,9 +2,33 @@ from .common import *
 
 DEBUG = False
 
-SECRET_KEY = os.environ["SECRET_KEY"].strip()
 
-ALLOWED_HOSTS = [os.environ["ALLOWED_HOSTS"].strip()]
+def required_environment_value(name):
+    value = os.environ.get(name, "").strip()
+    if not value:
+        raise RuntimeError(f"{name} environment variable is required")
+    return value
+
+
+def environment_boolean(name, default=False):
+    value = os.environ.get(name, str(default)).strip().lower()
+    if value in {"1", "true", "yes", "on"}:
+        return True
+    if value in {"0", "false", "no", "off", ""}:
+        return False
+    raise RuntimeError(f"{name} environment variable must be a boolean")
+
+
+SECRET_KEY = required_environment_value("SECRET_KEY")
+if len(SECRET_KEY) < 50:
+    raise RuntimeError("SECRET_KEY must contain at least 50 characters")
+DEFAULT_FROM_EMAIL = required_environment_value("DEFAULT_FROM_EMAIL")
+SITE_DOMAIN = required_environment_value("SITE_DOMAIN")
+SITE_NAME = os.environ.get("SITE_NAME", SITE_DOMAIN).strip() or SITE_DOMAIN
+
+ALLOWED_HOSTS = [host.strip() for host in required_environment_value("ALLOWED_HOSTS").split(",") if host.strip()]
+if not ALLOWED_HOSTS or "*" in ALLOWED_HOSTS:
+    raise RuntimeError("ALLOWED_HOSTS must contain explicit hostnames")
 INTERNAL_IPS = ["127.0.0.1"]
 
 INSTALLED_APPS += [
@@ -21,9 +45,9 @@ MIDDLEWARE += [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.environ.get("POSTGRES_DB"),
-        "USER": os.environ.get("POSTGRES_USER"),
-        "PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+        "NAME": required_environment_value("POSTGRES_DB"),
+        "USER": required_environment_value("POSTGRES_USER"),
+        "PASSWORD": required_environment_value("POSTGRES_PASSWORD"),
         "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
         "PORT": os.environ.get("POSTGRES_PORT", "5432"),
     }
@@ -35,7 +59,7 @@ DATABASES = {
 
 # Production: use separate Google Cloud Storage prefixes for collected static
 # assets and user-uploaded media.
-GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME").strip()
+GS_BUCKET_NAME = required_environment_value("GS_BUCKET_NAME")
 
 STORAGES = {
     "default": {
@@ -53,7 +77,12 @@ STATIC_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/staticfiles/"
 # Media files (uploads) optional
 MEDIA_URL = f"https://storage.googleapis.com/{GS_BUCKET_NAME}/mediafiles/"
 
-REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/")
+REDIS_URL = required_environment_value("REDIS_URL").rstrip("/")
+
+from urllib.parse import urlsplit
+
+if urlsplit(REDIS_URL).path:
+    raise RuntimeError("REDIS_URL must not include a database suffix; use cache URL overrides")
 
 CACHES = {
     "default": {
@@ -80,48 +109,28 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 CSRF_COOKIE_SECURE = True
 
-SECURE_SSL_REDIRECT = (
-    os.environ.get("SECURE_SSL_REDIRECT", "true").strip().lower()
-    in {"1", "true", "yes", "on"}
-)
+SECURE_SSL_REDIRECT = environment_boolean("SECURE_SSL_REDIRECT", True)
 SECURE_HSTS_SECONDS = int(os.environ.get("SECURE_HSTS_SECONDS", "31536000"))
-SECURE_HSTS_INCLUDE_SUBDOMAINS = (
-    os.environ.get("SECURE_HSTS_INCLUDE_SUBDOMAINS", "").strip().lower()
-    in {"1", "true", "yes", "on"}
-)
-SECURE_HSTS_PRELOAD = (
-    os.environ.get("SECURE_HSTS_PRELOAD", "").strip().lower()
-    in {"1", "true", "yes", "on"}
-)
-
-if (
-    os.environ.get("TRUST_X_FORWARDED_PROTO", "").strip().lower()
-    in {"1", "true", "yes", "on"}
-):
+SECURE_HSTS_INCLUDE_SUBDOMAINS = environment_boolean("SECURE_HSTS_INCLUDE_SUBDOMAINS")
+SECURE_HSTS_PRELOAD = environment_boolean("SECURE_HSTS_PRELOAD")
+if environment_boolean("TRUST_X_FORWARDED_PROTO"):
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
 
 
 # Email SMTP
 # https://docs.djangoproject.com/en/4.2/topics/email/#smtp-backend
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ["EMAIL_HOST"].strip()
+EMAIL_HOST = required_environment_value("EMAIL_HOST")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "25"))
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = (
-    os.environ.get("EMAIL_USE_TLS", "").strip().lower()
-    in {"1", "true", "yes", "on"}
-)
-EMAIL_USE_SSL = (
-    os.environ.get("EMAIL_USE_SSL", "").strip().lower()
-    in {"1", "true", "yes", "on"}
-)
-EMAIL_TIMEOUT = (
-    float(os.environ["EMAIL_TIMEOUT"])
-    if os.environ.get("EMAIL_TIMEOUT")
-    else None
-)
+EMAIL_USE_TLS = environment_boolean("EMAIL_USE_TLS")
+EMAIL_USE_SSL = environment_boolean("EMAIL_USE_SSL")
+if EMAIL_USE_TLS and EMAIL_USE_SSL:
+    raise RuntimeError("EMAIL_USE_TLS and EMAIL_USE_SSL cannot both be enabled")
+EMAIL_TIMEOUT = float(os.environ.get("EMAIL_TIMEOUT", "10"))
+if EMAIL_TIMEOUT <= 0:
+    raise RuntimeError("EMAIL_TIMEOUT must be positive")
 EMAIL_SSL_KEYFILE = os.environ.get("EMAIL_SSL_KEYFILE")
 EMAIL_SSL_CERTFILE = os.environ.get("EMAIL_SSL_CERTFILE")

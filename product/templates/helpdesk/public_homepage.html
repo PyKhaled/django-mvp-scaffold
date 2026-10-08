@@ -78,14 +78,14 @@
           </p>
           <ul class="list-unstyled list-separated">
             <li>
-              <a href="https://help.example.com" target="_blank" class="list-separated-item">
+              <a href="{% url 'helpdesk:kb_index' %}" class="list-separated-item">
                 <span>{% trans 'Knowledge Base' %}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6h11a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-11a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2" /><path d="M9 6v-2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v2" /><path d="M13 12h.01" /><path d="M9 12h.01" /></path></svg>
               </a>
             </li>
             <li>
-              <a href="https://faq.example.com" target="_blank" class="list-separated-item">
-                <span>{% trans 'FAQ' %}</span>
+              <a href="{% url 'helpdesk:submit' %}" class="list-separated-item">
+                <span>{% trans 'Submit a support request' %}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 17l0 .01" /><path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" /></path></svg>
               </a>
             </li>
