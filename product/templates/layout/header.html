@@ -33,6 +33,7 @@
           </a>
           <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
             <a href="{% url 'profile' %}" class="dropdown-item">Profile</a>
+            <a href="{% url 'notifications:all' %}" class="dropdown-item">Notifications</a>
             <a href="{% url 'settings:profile' %}" class="dropdown-item">Settings</a>
             {% if request.user.is_staff %}<a href="{% url 'admin:index' %}" class="dropdown-item">Administration</a>{% endif %}
             <div class="dropdown-divider"></div>

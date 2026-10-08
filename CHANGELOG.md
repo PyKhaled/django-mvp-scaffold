@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Fixed
+- Notification pages respect unread filtering and pagination, use the shared layout,
+  and provide CSRF-protected read/unread actions.
 - Helpdesk module imports and `/help/` routing.
 - Login destination and local maintenance cache configuration.
 - Production configuration validation and container application/dependency paths.

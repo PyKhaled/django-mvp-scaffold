@@ -1,15 +1,20 @@
-<a href="#" class="list-group-item">
-  <div class="row align-items-center">
-    <div class="col text-truncate">
-      <div class="text-body d-block">
-        {{ notice.actor }} {{ notice.verb }} {% if notice.target %} of {{ notice.target }} {% endif %}
+{% load i18n %}
+<div class="list-group-item">
+  <div class="row align-items-center g-3">
+    <div class="col">
+      <div class="text-body">
+        {{ notice.actor }} {{ notice.verb }}{% if notice.target %} · {{ notice.target }}{% endif %}
+        {% if notice.unread %}<span class="badge bg-blue-lt ms-2">{% trans 'Unread' %}</span>{% endif %}
       </div>
-      <span class="text-secondary small lh-base">
-        {{ notice.timesince }} ago
-      </span>
-      <div class="d-block text-secondary text-truncate mt-n1">
-        {{ notice.description|linebreaksbr }}
-      </div>
+      <div class="text-secondary small">{% blocktranslate with elapsed=notice.timesince %}{{ elapsed }} ago{% endblocktranslate %}</div>
+      {% if notice.description %}<div class="text-secondary mt-1">{{ notice.description|linebreaksbr }}</div>{% endif %}
+    </div>
+    <div class="col-12 col-sm-auto">
+      <form method="post" action="{% if notice.unread %}{% url 'notifications:mark_as_read' notice.slug %}{% else %}{% url 'notifications:mark_as_unread' notice.slug %}{% endif %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button class="btn btn-sm btn-outline-secondary" type="submit">{% if notice.unread %}{% trans 'Mark as read' %}{% else %}{% trans 'Mark as unread' %}{% endif %}</button>
+      </form>
     </div>
   </div>
-</a>
+</div>

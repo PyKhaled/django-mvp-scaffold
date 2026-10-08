@@ -20,6 +20,7 @@ from django.urls import NoReverseMatch, reverse
 from django.utils import timezone
 from helpdesk import settings as helpdesk_settings
 from helpdesk.models import FollowUp, Queue, Ticket
+from notifications.signals import notify
 
 from product.accounts.models import UserInformation
 
@@ -699,6 +700,92 @@ class HelpdeskWorkflowTests(TestCase):
         self.assertEqual(response.headers["Cache-Control"], "private, no-store")
         ticket.refresh_from_db()
         self.assertEqual(ticket.status, Ticket.CLOSED_STATUS)
+
+
+class NotificationsTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="notification-user", password="test-pass-123")
+        self.other_user = User.objects.create_user(username="other-notification-user")
+        self.client.force_login(self.user)
+
+    def send_notification(self, recipient, verb):
+        notify.send(self.other_user, recipient=recipient, verb=verb)
+        return recipient.notifications.get(verb=verb)
+
+    def test_unread_page_filters_read_and_other_users_notifications(self):
+        self.send_notification(self.user, "unread account update")
+        self.send_notification(self.user, "previously read update").mark_as_read()
+        self.send_notification(self.other_user, "another account update")
+
+        response = self.client.get(reverse("notifications:unread"))
+
+        self.assertContains(response, "unread account update")
+        self.assertNotContains(response, "previously read update")
+        self.assertNotContains(response, "another account update")
+        self.assertContains(response, "css/app.css")
+        self.assertContains(response, "Django MVP Scaffold")
+        all_response = self.client.get(reverse("notifications:all"))
+        self.assertContains(all_response, "previously read update")
+        self.assertNotContains(all_response, "another account update")
+
+    def test_notification_lists_render_only_the_current_page(self):
+        for index in range(21):
+            self.send_notification(self.user, f"paginated update {index:02d}.")
+
+        for name in ("all", "unread"):
+            with self.subTest(name=name):
+                first = self.client.get(reverse(f"notifications:{name}"))
+                second = self.client.get(reverse(f"notifications:{name}"), {"page": 2})
+                self.assertEqual(len(first.context["notifications"]), 20)
+                self.assertEqual(len(second.context["notifications"]), 1)
+                self.assertContains(first, "?page=2")
+                self.assertContains(second, "?page=1")
+                for notice in second.context["notifications"]:
+                    self.assertContains(second, notice.verb)
+                    self.assertNotContains(first, notice.verb)
+                for notice in first.context["notifications"]:
+                    self.assertNotContains(second, notice.verb)
+
+    def test_empty_notification_page_uses_shared_layout(self):
+        response = self.client.get(reverse("notifications:unread"))
+        self.assertContains(response, "No notifications to show.")
+        self.assertContains(response, "css/app.css")
+
+    def test_notification_pages_require_login(self):
+        self.client.logout()
+        for name in ("all", "unread"):
+            url = reverse(f"notifications:{name}")
+            self.assertRedirects(self.client.get(url), f"{reverse('login')}?next={url}")
+
+    def test_read_unread_actions_require_post_and_csrf(self):
+        notice = self.send_notification(self.user, "actionable account update")
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.user)
+        listing = reverse("notifications:all")
+        response = client.get(listing)
+        self.assertContains(response, reverse("notifications:mark_as_read", args=[notice.slug]))
+        token = client.cookies["csrftoken"].value
+
+        for action, expected in (("mark_as_read", False), ("mark_as_unread", True)):
+            url = reverse(f"notifications:{action}", args=[notice.slug])
+            self.assertEqual(client.get(url).status_code, 405)
+            self.assertEqual(client.post(url).status_code, 403)
+            response = client.post(url, {"csrfmiddlewaretoken": token, "next": listing})
+            self.assertRedirects(response, listing)
+            notice.refresh_from_db()
+            self.assertEqual(notice.unread, expected)
+
+    def test_read_actions_cannot_change_other_users_notifications(self):
+        own = self.send_notification(self.user, "own update")
+        foreign = self.send_notification(self.other_user, "foreign update")
+        response = self.client.post(reverse("notifications:mark_as_read", args=[foreign.slug]))
+        self.assertEqual(response.status_code, 404)
+        response = self.client.post(reverse("notifications:mark_all_as_read"))
+        self.assertRedirects(response, reverse("notifications:unread"))
+        own.refresh_from_db()
+        foreign.refresh_from_db()
+        self.assertFalse(own.unread)
+        self.assertTrue(foreign.unread)
 
 
 class PlatformIntegrationTests(TestCase):
