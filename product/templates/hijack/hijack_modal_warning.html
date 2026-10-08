@@ -1,6 +1,6 @@
-{% load i18n hijack %}
+{% load i18n %}
 
-{% if hijack_user %}
+{% if request.user.is_hijacked %}
   <!-- Hijack Modal Warning -->
   <div class="modal fade" id="hijackWarningModal" tabindex="-1" role="dialog" aria-labelledby="hijackWarningLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -33,9 +33,9 @@
           <div class="mb-3">
             <label class="form-label">{% trans "Current User" %}</label>
             <div class="input-group">
-              <input type="text" class="form-control" readonly value="{{ hijack_user.username }}">
-              {% if hijack_user.get_full_name %}
-                <span class="input-group-text">{{ hijack_user.get_full_name }}</span>
+              <input type="text" class="form-control" readonly value="{{ request.user.username }}">
+              {% if request.user.get_full_name %}
+                <span class="input-group-text">{{ request.user.get_full_name }}</span>
               {% endif %}
             </div>
           </div>
@@ -54,25 +54,21 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans "Keep Hijacking" %}</button>
-          <a href="{% url 'hijack:release_hijack' %}" class="btn btn-warning">
+          <form action="{% url 'hijack:release' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="btn btn-warning">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M9 6l-6 6l6 6" />
               <path d="M15 12h-12" />
             </svg>
             {% trans "Release User" %}
-          </a>
+          </button>
+          </form>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    // Auto-show hijack warning modal on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      var hijackModal = new bootstrap.Modal(document.getElementById('hijackWarningModal'));
-      // Uncomment to auto-show on every page load:
-      // hijackModal.show();
-    });
-  </script>
 {% endif %}

@@ -872,6 +872,66 @@ class PlatformIntegrationTests(TestCase):
         self.assertTrue(show_toolbar(request))
 
 
+class HijackIntegrationTests(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create_superuser(
+            username="hijack-admin", email="", password="test-pass-123"
+        )
+        self.customer = User.objects.create_user(username="hijack-customer", password="test-pass-123")
+
+    def test_normal_session_has_no_impersonation_warning(self):
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("profile"))
+        self.assertNotContains(response, 'id="hijack-warning"')
+
+    def test_impersonation_warning_and_release_preserve_csrf_protection(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.admin)
+        client.get(reverse("profile"))
+        acquire = reverse("hijack:acquire")
+        release = reverse("hijack:release")
+        self.assertEqual(client.post(acquire, {"user_pk": self.customer.pk}).status_code, 403)
+        response = client.post(acquire, {
+            "user_pk": self.customer.pk,
+            "next": reverse("profile"),
+            "csrfmiddlewaretoken": client.cookies["csrftoken"].value,
+        })
+        self.assertRedirects(response, reverse("profile"))
+        response = client.get(reverse("profile"))
+        self.assertTemplateUsed(response, "hijack/notification.html")
+        self.assertContains(response, 'id="hijack-warning"', count=1)
+        self.assertContains(response, "You are currently impersonating another user")
+        self.assertContains(response, self.customer.username)
+        self.assertContains(response, f'<form action="{release}" method="post">')
+        self.assertEqual(client.get(release).status_code, 405)
+        self.assertEqual(client.post(release).status_code, 403)
+        response = client.post(release, {
+            "next": reverse("profile"),
+            "csrfmiddlewaretoken": client.cookies["csrftoken"].value,
+        })
+        self.assertRedirects(response, reverse("profile"))
+        self.assertEqual(int(client.session["_auth_user_id"]), self.admin.pk)
+        self.assertNotContains(client.get(reverse("profile")), 'id="hijack-warning"')
+
+    def test_staff_without_hijack_permission_cannot_impersonate(self):
+        staff = User.objects.create_user(username="hijack-staff", is_staff=True)
+        self.client.force_login(staff)
+        response = self.client.post(reverse("hijack:acquire"), {"user_pk": self.customer.pk})
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(int(self.client.session["_auth_user_id"]), staff.pk)
+
+    def test_optional_warning_templates_use_current_context_and_release_form(self):
+        request = RequestFactory().get(reverse("profile"))
+        request.user = self.customer
+        request.user.is_hijacked = True
+        for name in ("hijack_banner.html", "hijack_modal_warning.html"):
+            with self.subTest(template=name):
+                rendered = get_template(f"hijack/{name}").render({}, request=request)
+                self.assertIn(self.customer.username, rendered)
+                self.assertIn(f'action="{reverse("hijack:release")}" method="post"', rendered)
+                self.assertIn('name="csrfmiddlewaretoken"', rendered)
+
+
 class ProductionSettingsTests(SimpleTestCase):
     project_root = Path(__file__).resolve().parents[2]
 

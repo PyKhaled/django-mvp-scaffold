@@ -1,10 +1,8 @@
 {% load i18n %}
-{% load hijack %}
 
-{% if hijack_user %}
+{% if request.user.is_hijacked %}
   <div class="hijack-warning-container">
-    <div class="alert alert-warning alert-dismissible" role="alert" id="hijack-warning">
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="alert alert-warning" role="alert" id="hijack-warning">
       <div class="d-flex align-items-center">
         <div class="me-3">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon text-warning" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -20,21 +18,25 @@
           </h4>
           <div class="text-secondary">
             <strong>{% trans "Hijacking as:" %}</strong>
-            <code>{{ hijack_user.username }}</code>
-            {% if hijack_user.get_full_name %}
-              ({{ hijack_user.get_full_name }})
+            <code>{{ request.user.username }}</code>
+            {% if request.user.get_full_name %}
+              ({{ request.user.get_full_name }})
             {% endif %}
           </div>
         </div>
         <div class="ms-3">
-          <a href="{% url 'hijack:release_hijack' %}" class="btn btn-sm btn-warning">
+          <form action="{% url 'hijack:release' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="btn btn-sm btn-warning">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M9 6l-6 6l6 6" />
               <path d="M15 12h-12" />
             </svg>
             {% trans "Release User" %}
-          </a>
+          </button>
+          </form>
         </div>
       </div>
     </div>
@@ -42,28 +44,50 @@
 
   <style>
     .hijack-warning-container {
-      position: relative;
-      z-index: 1030;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1100;
+      font-family: system-ui, sans-serif;
     }
 
-    .alert.alert-warning {
+    #hijack-warning {
+      margin: 0;
+      padding: 1rem;
+      border-radius: 0;
       background-color: #fff3cd;
       border-color: #ffc107;
       color: #664d03;
     }
 
-    .alert.alert-warning .btn-warning {
+    #hijack-warning > div {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    #hijack-warning .flex-grow-1 {
+      flex: 1;
+    }
+
+    #hijack-warning .alert-title {
+      margin: 0 0 0.25rem;
+    }
+
+    #hijack-warning .btn-warning {
       background-color: #ffc107;
       border-color: #ffc107;
       color: #000;
     }
 
-    .alert.alert-warning .btn-warning:hover {
+    #hijack-warning .btn-warning:hover {
       background-color: #ffb800;
       border-color: #ffb800;
     }
 
-    .alert.alert-warning code {
+    #hijack-warning code {
       background-color: rgba(0, 0, 0, 0.05);
       padding: 0.25rem 0.5rem;
       border-radius: 0.25rem;

@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Fixed
+- Hijack warning templates now use the active user context and CSRF-protected release forms;
+  the custom persistent notification is injected during impersonation.
 - Notification pages respect unread filtering and pagination, use the shared layout,
   and provide CSRF-protected read/unread actions.
 - Helpdesk module imports and `/help/` routing.
