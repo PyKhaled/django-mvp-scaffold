@@ -1,7 +1,7 @@
 [project]
-name = "product"
+name = "django-mvp-scaffold"
 version = "0.1.0"
-description = "product"
+description = "Opinionated Django MVP starter with accounts, helpdesk, and Tabler UI"
 requires-python = ">=3.12"
 
 [dependency-groups]
@@ -14,9 +14,7 @@ base = [
     "django-model-utils==5.0.0",
     "django-notifications-community==1.12.1",
     "django-simple-history==3.10.1",
-    "openai==2.43.0",
     "pillow==12.3.0",
-    "pydantic==2.13.4",
     "setuptools==84.0.0",
 ]
 
@@ -36,6 +34,8 @@ production = [
     "psycopg[binary]==3.2.13",
     "redis==8.1.0",
 ]
+
+docs = ["mkdocs==1.6.1", "mkdocs-material==9.7.7"]
 
 [tool.ruff]
 target-version = "py312"
