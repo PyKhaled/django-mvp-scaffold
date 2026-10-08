@@ -65,7 +65,7 @@ Start at the [documentation home](docs/README.md).
 - [Architecture](docs/architecture/system-overview.md)
 - [Deployment and rollback](docs/runbooks/deployment.md)
 - [Known issues](docs/known-issues.md)
-- [API scope](docs/api/index.md) and [adoption templates](docs/templates/index.md)
+- [Helpdesk API reference](docs/api/index.md) and [adoption templates](docs/templates/index.md)
 
 Preview the docs with `python -m pip install --group docs` followed by `mkdocs serve`.
 

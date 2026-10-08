@@ -7,6 +7,14 @@ exclude_docs: |
 theme:
   name: material
 
+extra_css:
+  - https://unpkg.com/swagger-ui-dist@5.33.1/swagger-ui.css
+  - assets/css/swagger.css
+
+extra_javascript:
+  - https://unpkg.com/swagger-ui-dist@5.33.1/swagger-ui-bundle.js
+  - assets/js/swagger.js
+
 nav:
   - Home: README.md
 
@@ -18,7 +26,7 @@ nav:
       - System Overview: architecture/system-overview.md
 
   - API:
-      - Overview: api/index.md
+      - Helpdesk API Reference: api/index.md
 
   - Runbooks:
       - Overview: runbooks/index.md

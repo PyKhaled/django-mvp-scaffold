@@ -1,0 +1,32 @@
+#swagger-ui {
+  min-width: 0;
+  margin: 1.5rem 0;
+}
+
+#swagger-ui .wrapper {
+  padding: 0;
+}
+
+#swagger-ui .opblock-summary-path {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+#swagger-ui pre {
+  overflow-x: auto;
+}
+
+@media (max-width: 600px) {
+  #swagger-ui .opblock-summary {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  #swagger-ui .opblock-summary-path {
+    max-width: calc(100% - 100px);
+  }
+
+  #swagger-ui .scheme-container .schemes {
+    gap: 1rem;
+  }
+}

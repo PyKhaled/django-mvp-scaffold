@@ -8,7 +8,7 @@ require validation against your own infrastructure.
 - [Customization](guides/customization.md): turn the example into your product.
 - [Configuration](configuration.md): environment variables and runtime roles.
 - [Architecture](architecture/system-overview.md): components and request flow.
-- [API scope](api/index.md): actual integration boundaries and example contracts.
+- [Helpdesk API reference](api/index.md): OpenAPI contract and embedded Swagger UI.
 - [Runbooks](runbooks/index.md): deployment, maintenance, backup, support, incidents.
 - [Known issues](known-issues.md): current limitations and evidence boundaries.
 - [Releases](guides/releases.md): versioning, checks, and rollback notes.

@@ -16,6 +16,7 @@
 - Documentation separates scaffold guidance from downstream adoption templates.
 
 ### Added
+- Generated helpdesk OpenAPI contract and embedded API reference, with a CI drift check.
 - CI checks, configuration/customization/release guides, and contribution templates.
 - Private vulnerability-reporting guidance and third-party asset notices.
 

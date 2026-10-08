@@ -1,0 +1,2022 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Django MVP Scaffold — Helpdesk API",
+    "version": "0.1.0",
+    "description": "Baseline contract derived from the registered django-helpdesk 2.4.0 viewsets and serializers. Resource operations require is_staff. Session-authenticated writes require a CSRF token. Basic authentication must use HTTPS. Queue permissions restrict accessible objects. Deployment custom fields and storage behavior require separate validation. This is a documentation snapshot, not a runtime schema endpoint."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Application origin; docs may be hosted separately."
+    }
+  ],
+  "tags": [
+    {
+      "name": "tickets"
+    },
+    {
+      "name": "followups"
+    },
+    {
+      "name": "followups-attachments"
+    },
+    {
+      "name": "users"
+    }
+  ],
+  "security": [
+    {
+      "sessionAuth": []
+    },
+    {
+      "basicAuth": []
+    }
+  ],
+  "paths": {
+    "/help/api/tickets/": {
+      "get": {
+        "operationId": "list_tickets",
+        "summary": "List tickets",
+        "tags": [
+          "tickets"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Requested page does not exist."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketPage"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 25
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Comma-separated numeric status codes, e.g. 1,3. Names are not supported.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "create_tickets",
+        "summary": "Create tickets",
+        "tags": [
+          "tickets"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "201": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketCreate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketCreate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/help/api/tickets/{id}/": {
+      "get": {
+        "operationId": "retrieve_tickets",
+        "summary": "Retrieve tickets",
+        "tags": [
+          "tickets"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "put": {
+        "operationId": "update_tickets",
+        "summary": "Update tickets",
+        "tags": [
+          "tickets"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketInput"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketInput"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketInput"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "partial_update_tickets",
+        "summary": "Partial update tickets",
+        "tags": [
+          "tickets"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ticket"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketPatch"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketPatch"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketPatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "destroy_tickets",
+        "summary": "Destroy tickets",
+        "tags": [
+          "tickets"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "204": {
+            "description": "Deleted."
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/help/api/followups/": {
+      "get": {
+        "operationId": "list_followups",
+        "summary": "List followups",
+        "tags": [
+          "followups"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Requested page does not exist."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUpPage"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 25
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "create_followups",
+        "summary": "Create followups",
+        "tags": [
+          "followups"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "201": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpInput"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpInput"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpInput"
+              }
+            }
+          }
+        },
+        "description": "The server sets user to the authenticated staff account."
+      }
+    },
+    "/help/api/followups/{id}/": {
+      "get": {
+        "operationId": "retrieve_followups",
+        "summary": "Retrieve followups",
+        "tags": [
+          "followups"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "put": {
+        "operationId": "update_followups",
+        "summary": "Update followups",
+        "tags": [
+          "followups"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpInput"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpInput"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpInput"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "partial_update_followups",
+        "summary": "Partial update followups",
+        "tags": [
+          "followups"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUp"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpPatch"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpPatch"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpPatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "destroy_followups",
+        "summary": "Destroy followups",
+        "tags": [
+          "followups"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "204": {
+            "description": "Deleted."
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/help/api/followups-attachments/": {
+      "get": {
+        "operationId": "list_followups_attachments",
+        "summary": "List followups-attachments",
+        "tags": [
+          "followups-attachments"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Requested page does not exist."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUpAttachmentPage"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 25
+            }
+          }
+        ]
+      },
+      "post": {
+        "operationId": "create_followups_attachments",
+        "summary": "Create followups-attachments",
+        "tags": [
+          "followups-attachments"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "201": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUpAttachment"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentInput"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentInput"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/help/api/followups-attachments/{id}/": {
+      "get": {
+        "operationId": "retrieve_followups_attachments",
+        "summary": "Retrieve followups-attachments",
+        "tags": [
+          "followups-attachments"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUpAttachment"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      },
+      "put": {
+        "operationId": "update_followups_attachments",
+        "summary": "Update followups-attachments",
+        "tags": [
+          "followups-attachments"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUpAttachment"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentInput"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentInput"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentInput"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "partial_update_followups_attachments",
+        "summary": "Partial update followups-attachments",
+        "tags": [
+          "followups-attachments"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FollowUpAttachment"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentPatch"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentPatch"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FollowUpAttachmentPatch"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "destroy_followups_attachments",
+        "summary": "Destroy followups-attachments",
+        "tags": [
+          "followups-attachments"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "404": {
+            "description": "Object not found or outside the accessible queryset."
+          },
+          "204": {
+            "description": "Deleted."
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/help/api/users/": {
+      "post": {
+        "operationId": "create_users",
+        "summary": "Create users",
+        "tags": [
+          "users"
+        ],
+        "responses": {
+          "403": {
+            "description": "Authentication, staff permission, or CSRF denied."
+          },
+          "400": {
+            "description": "Field or form validation failed."
+          },
+          "201": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-CSRFToken",
+            "in": "header",
+            "description": "Required with Django session authentication; match the CSRF cookie. Not required for Basic authentication without a session.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/help/api/": {
+      "get": {
+        "operationId": "api_root",
+        "summary": "Browse API collection links",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Router links, not ticket or account data. Individual endpoints require staff access.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sessionAuth": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "sessionid",
+        "description": "Django staff session. Writes also require X-CSRFToken and a matching CSRF cookie."
+      },
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Staff credentials over HTTPS."
+      }
+    },
+    "schemas": {
+      "Ticket": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "queue": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "The content of the customers query."
+          },
+          "resolution": {
+            "type": "string",
+            "nullable": true,
+            "description": "The resolution provided to the customer by our staff."
+          },
+          "submitter_email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "description": "The submitter will receive an email for all public follow-ups left for this task.",
+            "maxLength": 254
+          },
+          "assigned_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "status": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "on_hold": {
+            "type": "boolean",
+            "description": "If a ticket is on hold, it will not automatically be escalated."
+          },
+          "priority": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "description": "1 = Highest Priority, 5 = Low Priority",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "merged_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "followup_set": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "readOnly": true
+                },
+                "ticket": {
+                  "type": "integer"
+                },
+                "user": {
+                  "type": "integer",
+                  "nullable": true
+                },
+                "title": {
+                  "type": "string",
+                  "nullable": true,
+                  "maxLength": 200
+                },
+                "comment": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "public": {
+                  "type": "boolean",
+                  "description": "Public tickets are viewable by the submitter and all staff, but non-public tickets can only be seen by staff."
+                },
+                "new_status": {
+                  "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                  ],
+                  "type": "integer",
+                  "nullable": true,
+                  "description": "If the status was changed, what was it changed to?",
+                  "minimum": -9223372036854775808,
+                  "maximum": 9223372036854775807
+                },
+                "time_spent": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Time spent on this follow up"
+                },
+                "followupattachment_set": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "readOnly": true
+                      },
+                      "followup": {
+                        "type": "integer"
+                      },
+                      "file": {
+                        "type": "string",
+                        "format": "uri"
+                      },
+                      "filename": {
+                        "type": "string",
+                        "maxLength": 1000
+                      },
+                      "mime_type": {
+                        "type": "string",
+                        "maxLength": 255
+                      },
+                      "size": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64",
+                        "description": "Size of this file in bytes"
+                      }
+                    },
+                    "required": [
+                      "followup",
+                      "file"
+                    ]
+                  },
+                  "readOnly": true
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date-time",
+                  "readOnly": true
+                },
+                "message_id": {
+                  "type": "string",
+                  "readOnly": true,
+                  "nullable": true,
+                  "description": "The Message ID of the submitter's email."
+                },
+                "email_recipients": {
+                  "type": "object",
+                  "readOnly": true,
+                  "nullable": true,
+                  "description": "Addresses successfully notified by e-mail about this follow-up. Null means recipients were not recorded."
+                }
+              },
+              "required": [
+                "ticket"
+              ]
+            },
+            "readOnly": true
+          }
+        },
+        "required": [
+          "queue",
+          "title"
+        ],
+        "description": "Baseline fields only. Deployments can add custom_<name> fields with their own validation."
+      },
+      "TicketInput": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "The content of the customers query."
+          },
+          "resolution": {
+            "type": "string",
+            "nullable": true,
+            "description": "The resolution provided to the customer by our staff."
+          },
+          "submitter_email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "description": "The submitter will receive an email for all public follow-ups left for this task.",
+            "maxLength": 254
+          },
+          "assigned_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "status": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "on_hold": {
+            "type": "boolean",
+            "description": "If a ticket is on hold, it will not automatically be escalated."
+          },
+          "priority": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "description": "1 = Highest Priority, 5 = Low Priority",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "merged_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "attachment": {
+            "type": "string",
+            "format": "binary",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "queue",
+          "title"
+        ],
+        "description": "Baseline fields only. Deployments can add custom_<name> fields with their own validation."
+      },
+      "TicketPatch": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "The content of the customers query."
+          },
+          "resolution": {
+            "type": "string",
+            "nullable": true,
+            "description": "The resolution provided to the customer by our staff."
+          },
+          "submitter_email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "description": "The submitter will receive an email for all public follow-ups left for this task.",
+            "maxLength": 254
+          },
+          "assigned_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "status": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "on_hold": {
+            "type": "boolean",
+            "description": "If a ticket is on hold, it will not automatically be escalated."
+          },
+          "priority": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "description": "1 = Highest Priority, 5 = Low Priority",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "merged_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "attachment": {
+            "type": "string",
+            "format": "binary",
+            "writeOnly": true
+          }
+        },
+        "description": "Baseline fields only. Deployments can add custom_<name> fields with their own validation."
+      },
+      "TicketPage": {
+        "type": "object",
+        "required": [
+          "count",
+          "next",
+          "previous",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "next": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "previous": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Ticket"
+            }
+          }
+        }
+      },
+      "FollowUp": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "ticket": {
+            "type": "integer"
+          },
+          "user": {
+            "type": "integer",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "public": {
+            "type": "boolean",
+            "description": "Public tickets are viewable by the submitter and all staff, but non-public tickets can only be seen by staff."
+          },
+          "new_status": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "nullable": true,
+            "description": "If the status was changed, what was it changed to?",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "time_spent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Time spent on this follow up"
+          },
+          "followupattachment_set": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "readOnly": true
+                },
+                "followup": {
+                  "type": "integer"
+                },
+                "file": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "filename": {
+                  "type": "string",
+                  "maxLength": 1000
+                },
+                "mime_type": {
+                  "type": "string",
+                  "maxLength": 255
+                },
+                "size": {
+                  "type": "integer",
+                  "maximum": 9223372036854775807,
+                  "minimum": -9223372036854775808,
+                  "format": "int64",
+                  "description": "Size of this file in bytes"
+                }
+              },
+              "required": [
+                "followup",
+                "file"
+              ]
+            },
+            "readOnly": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "message_id": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true,
+            "description": "The Message ID of the submitter's email."
+          },
+          "email_recipients": {
+            "type": "object",
+            "readOnly": true,
+            "nullable": true,
+            "description": "Addresses successfully notified by e-mail about this follow-up. Null means recipients were not recorded."
+          }
+        },
+        "required": [
+          "ticket"
+        ]
+      },
+      "FollowUpInput": {
+        "type": "object",
+        "properties": {
+          "ticket": {
+            "type": "integer"
+          },
+          "user": {
+            "type": "integer",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "public": {
+            "type": "boolean",
+            "description": "Public tickets are viewable by the submitter and all staff, but non-public tickets can only be seen by staff."
+          },
+          "new_status": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "nullable": true,
+            "description": "If the status was changed, what was it changed to?",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "time_spent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Time spent on this follow up"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "ticket"
+        ]
+      },
+      "FollowUpPatch": {
+        "type": "object",
+        "properties": {
+          "ticket": {
+            "type": "integer"
+          },
+          "user": {
+            "type": "integer",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 200
+          },
+          "comment": {
+            "type": "string",
+            "nullable": true
+          },
+          "public": {
+            "type": "boolean",
+            "description": "Public tickets are viewable by the submitter and all staff, but non-public tickets can only be seen by staff."
+          },
+          "new_status": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "nullable": true,
+            "description": "If the status was changed, what was it changed to?",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "time_spent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Time spent on this follow up"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            },
+            "writeOnly": true
+          }
+        }
+      },
+      "FollowUpPage": {
+        "type": "object",
+        "required": [
+          "count",
+          "next",
+          "previous",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "next": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "previous": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FollowUp"
+            }
+          }
+        }
+      },
+      "FollowUpAttachment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "followup": {
+            "type": "integer"
+          },
+          "file": {
+            "type": "string",
+            "format": "uri"
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "mime_type": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "size": {
+            "type": "integer",
+            "maximum": 9223372036854775807,
+            "minimum": -9223372036854775808,
+            "format": "int64",
+            "description": "Size of this file in bytes"
+          }
+        },
+        "required": [
+          "followup",
+          "file"
+        ]
+      },
+      "FollowUpAttachmentInput": {
+        "type": "object",
+        "properties": {
+          "followup": {
+            "type": "integer"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "mime_type": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "size": {
+            "type": "integer",
+            "maximum": 9223372036854775807,
+            "minimum": -9223372036854775808,
+            "format": "int64",
+            "description": "Size of this file in bytes"
+          }
+        },
+        "required": [
+          "followup",
+          "file"
+        ]
+      },
+      "FollowUpAttachmentPatch": {
+        "type": "object",
+        "properties": {
+          "followup": {
+            "type": "integer"
+          },
+          "file": {
+            "type": "string",
+            "format": "binary"
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "mime_type": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "size": {
+            "type": "integer",
+            "maximum": 9223372036854775807,
+            "minimum": -9223372036854775808,
+            "format": "int64",
+            "description": "Size of this file in bytes"
+          }
+        }
+      },
+      "FollowUpAttachmentPage": {
+        "type": "object",
+        "required": [
+          "count",
+          "next",
+          "previous",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "next": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "previous": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FollowUpAttachment"
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "last_name": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "username": {
+            "type": "string",
+            "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Server-side regular-expression validation applies.",
+            "maxLength": 150
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          }
+        },
+        "required": [
+          "username"
+        ]
+      },
+      "UserInput": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "last_name": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "username": {
+            "type": "string",
+            "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Server-side regular-expression validation applies.",
+            "maxLength": 150
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ]
+      },
+      "UserPatch": {
+        "type": "object",
+        "properties": {
+          "first_name": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "last_name": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "username": {
+            "type": "string",
+            "description": "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only. Server-side regular-expression validation applies.",
+            "maxLength": 150
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "maxLength": 254
+          },
+          "password": {
+            "type": "string",
+            "writeOnly": true
+          }
+        }
+      },
+      "UserPage": {
+        "type": "object",
+        "required": [
+          "count",
+          "next",
+          "previous",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "next": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "previous": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        }
+      },
+      "TicketCreate": {
+        "type": "object",
+        "properties": {
+          "queue": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "nullable": false,
+            "description": "The content of the customers query.",
+            "minLength": 1
+          },
+          "resolution": {
+            "type": "string",
+            "nullable": true,
+            "description": "The resolution provided to the customer by our staff."
+          },
+          "submitter_email": {
+            "type": "string",
+            "format": "email",
+            "nullable": true,
+            "description": "The submitter will receive an email for all public follow-ups left for this task.",
+            "maxLength": 254
+          },
+          "assigned_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "status": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "on_hold": {
+            "type": "boolean",
+            "description": "If a ticket is on hold, it will not automatically be escalated."
+          },
+          "priority": {
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "type": "integer",
+            "description": "1 = Highest Priority, 5 = Low Priority",
+            "minimum": -9223372036854775808,
+            "maximum": 9223372036854775807
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "merged_to": {
+            "type": "integer",
+            "nullable": true
+          },
+          "attachment": {
+            "type": "string",
+            "format": "binary",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "queue",
+          "title",
+          "description",
+          "priority"
+        ],
+        "description": "Baseline fields only. Deployments can add custom_<name> fields with their own validation."
+      }
+    }
+  }
+}

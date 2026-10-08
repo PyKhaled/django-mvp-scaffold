@@ -27,6 +27,7 @@ jobs:
       - run: python manage.py test --noinput
       - run: python manage.py collectstatic --noinput --dry-run
       - run: python -m pip check
+      - run: python tools/generate_openapi.py --check
       - run: mkdocs build --strict
 
   dependency-audit:
