@@ -9,6 +9,9 @@ or `docker run --env-file`. Never commit a populated environment file.
 - `DJANGO_ENV`: `development` by default; only `development` and `production` are valid.
 - `SECRET_KEY`: development generates one when absent; production requires a
   nonempty key of at least 50 characters. Use a cryptographically random value.
+- `SITE_NAME`: product display name in both environments, default `Django MVP Scaffold`.
+  Restart application processes after changing it. Accounts migrations also update
+  the Django Site record; password-reset emails use the configured name immediately.
 - `PORT`: container bind port, default `8000`.
 - `WEB_CONCURRENCY`: production Gunicorn workers, default `2`; tune for workload.
 
@@ -25,7 +28,6 @@ or `docker run --env-file`. Never commit a populated environment file.
 
 ## Optional production values
 
-- `SITE_NAME`: defaults to `SITE_DOMAIN`.
 - `POSTGRES_HOST`: `localhost`; `POSTGRES_PORT`: `5432`.
 - `CACHE_REDIS_URL`, `MAINTENANCE_REDIS_URL`: complete URLs; defaults append `/0`
   and `/1` to the base URL. Use overrides for services without logical databases.

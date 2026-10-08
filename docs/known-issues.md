@@ -4,8 +4,8 @@
   HTTPS/proxy behavior, and backup restore require staging acceptance evidence.
 - Only Python 3.12 is in the baseline CI. Direct dependency pins are present, but
   transitive dependencies are not locked; record resolved packages per release.
-- CreativeBatch copy and branding are examples; creative-production workflows,
-  billing, organization tenancy, and Celery workers are not included.
+- Domain-specific workflows, billing, organization tenancy, and Celery workers
+  are not included. Add and validate them in your product.
 - The example OpenAPI document is not a live contract. No `/health` or example
   `/users/{user_id}` endpoint is provided.
 - Development generates a signing key when `SECRET_KEY` is absent. Export a

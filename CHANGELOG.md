@@ -8,6 +8,8 @@
 - Production configuration validation and container application/dependency paths.
 
 ### Changed
+- Default product identity is Django MVP Scaffold, configurable through `SITE_NAME`.
+- Website and welcome email copy describe the included account and support features.
 - Container roles now support web and a serialized release command using Gunicorn.
 - Production host lists accept comma-separated hostnames; invalid Boolean values fail.
 - Production keys require 50 characters and required deployment values fail early.

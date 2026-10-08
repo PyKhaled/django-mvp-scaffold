@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="CreativeBatch helps buyers manage creator briefs, production, reviews, usage rights, and final asset delivery.">
-  <title>CreativeBatch · Creator production, organized</title>
+  <meta name="description" content="{{ product_name }} provides accounts, profile settings, notifications, and support.">
+  <title>{{ product_name }} · Accounts and support</title>
   {% include 'layout/tabler_head.html' %}
 </head>
 <body>
@@ -16,11 +16,11 @@
       </button>
       <div class="collapse navbar-collapse" id="landing-nav">
         <nav class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-          <a class="nav-link" href="#workflow">How it works</a>
-          <a class="nav-link" href="#for-teams">For teams</a>
+          <a class="nav-link" href="#features">Features</a>
+          <a class="nav-link" href="#access">Access</a>
           <a class="nav-link" href="/help/">Support</a>
           {% if request.user.is_authenticated %}
-            <a class="btn btn-primary ms-lg-2" href="{% url 'profile' %}">Open workspace</a>
+            <a class="btn btn-primary ms-lg-2" href="{% url 'profile' %}">Open profile</a>
           {% else %}
             <a class="btn btn-outline-primary ms-lg-2" href="{% url 'login' %}">Log in</a>
             <a class="btn btn-primary" href="{% url 'login' %}">Get started</a>
@@ -35,28 +35,28 @@
       <div class="container-xl">
         <div class="row g-5 align-items-center">
           <div class="col-lg-7">
-            <div class="marketing-eyebrow mb-3">Creative operations for modern teams</div>
-            <h1 class="marketing-title mb-4">Creator production without the chaos.</h1>
+            <div class="marketing-eyebrow mb-3">Your account and support</div>
+            <h1 class="marketing-title mb-4">Accounts and support, together.</h1>
             <p class="marketing-lead mb-4">
-              Move every brief from creator matching to final delivery in one clear workflow. Keep feedback, approvals, revisions, and usage rights attached to the work.
+              Sign in to manage your profile and account settings. Contact support when you need help and follow your requests through secure ticket links.
             </p>
             <div class="d-flex flex-wrap gap-2">
               {% if request.user.is_authenticated %}
-                <a href="{% url 'profile' %}" class="btn btn-primary btn-lg">Open workspace</a>
+                <a href="{% url 'profile' %}" class="btn btn-primary btn-lg">Open profile</a>
               {% else %}
-                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Start a project</a>
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Sign in</a>
               {% endif %}
-              <a href="#workflow" class="btn btn-outline-primary btn-lg">See the workflow</a>
+              <a href="#features" class="btn btn-outline-primary btn-lg">Explore features</a>
             </div>
             <div class="d-flex flex-wrap gap-4 mt-5 text-secondary small">
               <span class="d-flex align-items-center gap-2">
-                <span class="badge bg-green-lt">✓</span> One source of truth
+                <span class="badge bg-green-lt">✓</span> Account settings
               </span>
               <span class="d-flex align-items-center gap-2">
-                <span class="badge bg-green-lt">✓</span> Buyer-first workflow
+                <span class="badge bg-green-lt">✓</span> Support requests
               </span>
               <span class="d-flex align-items-center gap-2">
-                <span class="badge bg-green-lt">✓</span> Clear approval history
+                <span class="badge bg-green-lt">✓</span> Notifications
               </span>
             </div>
           </div>
@@ -64,34 +64,30 @@
             <div class="landing-panel">
               <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                  <div class="text-uppercase small opacity-75">Campaign</div>
-                  <div class="h2 text-white mb-0">Autumn launch</div>
+                  <div class="text-uppercase small opacity-75">Included features</div>
+                  <div class="h2 text-white mb-0">Your account</div>
                 </div>
-                <span class="badge bg-green text-green-fg">On track</span>
+                <span class="badge bg-green text-green-fg">Available</span>
               </div>
               <div class="card">
                 <div class="card-body">
                   <div class="d-flex align-items-center mb-3">
-                    <span class="avatar bg-primary-lt me-3">MK</span>
+                    <span class="avatar bg-primary-lt me-3" aria-hidden="true">✓</span>
                     <div>
-                      <div class="fw-semibold">Maya K.</div>
-                      <div class="text-secondary small">Creator · 3 deliverables</div>
+                      <div class="fw-semibold">Profile and preferences</div>
+                      <div class="text-secondary small">Manage your account after signing in</div>
                     </div>
                   </div>
-                  <div class="progress progress-separated mb-3">
-                    <div class="progress-bar bg-primary" style="width: 70%"></div>
-                    <div class="progress-bar bg-yellow" style="width: 20%"></div>
-                  </div>
-                  <div class="row g-3 text-center">
-                    <div class="col-4"><div class="h3 mb-0">2</div><div class="small text-secondary">Approved</div></div>
-                    <div class="col-4"><div class="h3 mb-0">1</div><div class="small text-secondary">In review</div></div>
-                    <div class="col-4"><div class="h3 mb-0">0</div><div class="small text-secondary">Blocked</div></div>
-                  </div>
+                  <ul class="list-unstyled mb-0 text-secondary">
+                    <li class="mb-2">Profile and password settings</li>
+                    <li class="mb-2">Account notifications</li>
+                    <li>Support requests and follow-ups</li>
+                  </ul>
                 </div>
               </div>
               <div class="d-flex align-items-center gap-2 mt-4 small opacity-75">
                 <span class="status-dot status-dot-animated bg-green"></span>
-                Feedback and files stay with the deliverable
+                Support requests use secure ticket links
               </div>
             </div>
           </div>
@@ -99,70 +95,70 @@
       </div>
     </section>
 
-    <section class="py-6 py-lg-8" id="workflow">
+    <section class="py-6 py-lg-8" id="features">
       <div class="container-xl">
         <div class="row justify-content-center text-center mb-5">
           <div class="col-lg-7">
-            <div class="marketing-eyebrow mb-2">One connected workflow</div>
-            <h2 class="display-6 mb-3">From brief to approved asset</h2>
-            <p class="text-secondary fs-3">Give buyers, operators, and creators the context they need at every handoff.</p>
+            <div class="marketing-eyebrow mb-2">Included features</div>
+            <h2 class="display-6 mb-3">Manage your account and get help</h2>
+            <p class="text-secondary fs-3">Account tools and a helpdesk are available in one place.</p>
           </div>
         </div>
         <div class="row row-cards">
           <div class="col-md-6 col-xl-3">
             <article class="card workflow-card h-100"><div class="card-body">
               <span class="workflow-number mb-4">1</span>
-              <h3 class="card-title fs-2">Write the brief</h3>
-              <p class="text-secondary mb-0">Capture goals, formats, references, deadlines, and usage requirements once.</p>
+              <h3 class="card-title fs-2">Account access</h3>
+              <p class="text-secondary mb-0">Sign in securely and recover your password by email when needed.</p>
             </div></article>
           </div>
           <div class="col-md-6 col-xl-3">
             <article class="card workflow-card h-100"><div class="card-body">
               <span class="workflow-number mb-4">2</span>
-              <h3 class="card-title fs-2">Match creators</h3>
-              <p class="text-secondary mb-0">Coordinate the right creator and make acceptance or rejection explicit.</p>
+              <h3 class="card-title fs-2">Profile settings</h3>
+              <p class="text-secondary mb-0">Update your profile, change your password, and adjust appearance preferences.</p>
             </div></article>
           </div>
           <div class="col-md-6 col-xl-3">
             <article class="card workflow-card h-100"><div class="card-body">
               <span class="workflow-number mb-4">3</span>
-              <h3 class="card-title fs-2">Review drafts</h3>
-              <p class="text-secondary mb-0">Keep versions, focused feedback, and revision requests in one thread.</p>
+              <h3 class="card-title fs-2">Support requests</h3>
+              <p class="text-secondary mb-0">Submit a support request and use its secure link to follow up.</p>
             </div></article>
           </div>
           <div class="col-md-6 col-xl-3">
             <article class="card workflow-card h-100"><div class="card-body">
               <span class="workflow-number mb-4">4</span>
-              <h3 class="card-title fs-2">Approve & deliver</h3>
-              <p class="text-secondary mb-0">Record approval, usage rights, and the final files your team can ship.</p>
+              <h3 class="card-title fs-2">Notifications</h3>
+              <p class="text-secondary mb-0">View notifications associated with your account.</p>
             </div></article>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="bg-surface-secondary py-6 py-lg-8" id="for-teams">
+    <section class="bg-surface-secondary py-6 py-lg-8" id="access">
       <div class="container-xl">
         <div class="row g-5 align-items-center">
           <div class="col-lg-5">
-            <div class="marketing-eyebrow mb-2">Built around the work</div>
-            <h2 class="display-6 mb-3">Everyone sees what happens next.</h2>
-            <p class="text-secondary fs-3 mb-0">CreativeBatch replaces scattered messages and spreadsheets with an operational record your team can trust.</p>
+            <div class="marketing-eyebrow mb-2">Access and permissions</div>
+            <h2 class="display-6 mb-3">Tools for account holders and staff.</h2>
+            <p class="text-secondary fs-3 mb-0">{{ product_name }} provides account tools for users and restricted administration and helpdesk tools for staff.</p>
           </div>
           <div class="col-lg-7">
             <div class="row row-cards">
               <div class="col-md-6">
                 <div class="card h-100"><div class="card-body">
-                  <span class="badge bg-blue-lt mb-3">Buyers & operators</span>
-                  <h3>Control every campaign</h3>
-                  <p class="text-secondary mb-0">Track ownership, deadlines, revision rounds, approvals, and final delivery without chasing updates.</p>
+                  <span class="badge bg-blue-lt mb-3">Account holders</span>
+                  <h3>Manage your account</h3>
+                  <p class="text-secondary mb-0">Access your profile and settings, view notifications, and contact support.</p>
                 </div></div>
               </div>
               <div class="col-md-6">
                 <div class="card h-100"><div class="card-body">
-                  <span class="badge bg-purple-lt mb-3">Creators</span>
-                  <h3>Know exactly what to make</h3>
-                  <p class="text-secondary mb-0">Receive a clear brief, submit drafts, respond to actionable feedback, and close out delivery confidently.</p>
+                  <span class="badge bg-purple-lt mb-3">Authorized staff</span>
+                  <h3>Help users and administer the site</h3>
+                  <p class="text-secondary mb-0">Staff permissions control access to administration and helpdesk tools.</p>
                 </div></div>
               </div>
             </div>
@@ -175,10 +171,10 @@
       <div class="container-xl">
         <div class="card bg-primary text-primary-fg">
           <div class="card-body p-5 p-lg-6 text-center">
-            <h2 class="display-6 text-white">Make the next handoff obvious.</h2>
-            <p class="fs-3 opacity-75 mx-auto" style="max-width: 38rem">Bring your creator production workflow into one calm, accountable workspace.</p>
+            <h2 class="display-6 text-white">Ready to sign in?</h2>
+            <p class="fs-3 opacity-75 mx-auto" style="max-width: 38rem">Access your account or contact support if you need assistance.</p>
             {% if request.user.is_authenticated %}
-              <a href="{% url 'profile' %}" class="btn btn-light btn-lg mt-2">Open workspace</a>
+              <a href="{% url 'profile' %}" class="btn btn-light btn-lg mt-2">Open profile</a>
             {% else %}
               <a href="{% url 'login' %}" class="btn btn-light btn-lg mt-2">Get started</a>
             {% endif %}

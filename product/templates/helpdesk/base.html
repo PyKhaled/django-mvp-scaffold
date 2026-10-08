@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>{% block head_title %}{% block helpdesk_title %}Helpdesk{% endblock %}{% endblock %} · CreativeBatch</title>
+  <title>{% block head_title %}{% block helpdesk_title %}Helpdesk{% endblock %}{% endblock %} · {{ product_name }}</title>
   {% include 'layout/tabler_head.html' %}
   <link rel="stylesheet" href="{% static 'css/helpdesk.css' %}">
   {% block page_styles %}{% block helpdesk_head %}{% endblock %}{% endblock %}

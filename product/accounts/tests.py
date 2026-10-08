@@ -28,25 +28,25 @@ User = get_user_model()
 
 class AccountsTests(TestCase):
     def setUp(self):
-        self.user = User(username="creative-operator", email="")
+        self.user = User(username="account-user", email="")
         self.user.set_password("test-pass-123")
         self.user.save()
 
     def test_user_information_can_be_created(self):
         information = UserInformation.objects.create(
             user=self.user,
-            notes="Prefers concise creative briefs.",
+            notes="Prefers concise account updates.",
         )
 
         self.assertEqual(information.user, self.user)
-        self.assertEqual(str(information), "creative-operator Information")
+        self.assertEqual(str(information), "account-user Information")
 
     def test_login_uses_tabler_shell(self):
         response = self.client.get(reverse("login"))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "css/tabler.min.css")
-        self.assertContains(response, "CreativeBatch")
+        self.assertContains(response, "Django MVP Scaffold")
         self.assertContains(response, 'name="remember_me"')
 
     def test_login_without_next_redirects_to_accessible_profile(self):
@@ -57,13 +57,53 @@ class AccountsTests(TestCase):
 
         self.assertRedirects(response, reverse("profile"))
 
-    def test_landing_page_uses_creativebatch_tabler_ui(self):
+    def test_landing_page_uses_scaffold_tabler_ui(self):
         response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Creator production without the chaos.")
+        self.assertContains(response, "Accounts and support, together.")
         self.assertContains(response, "css/tabler.min.css")
         self.assertContains(response, "css/app.css")
+
+    @override_settings(SITE_NAME="Example Account Service")
+    def test_configured_identity_is_used_across_shared_pages(self):
+        for url in ("/", reverse("login"), reverse("password_reset"), "/help/"):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertContains(response, "Example Account Service")
+                self.assertNotContains(response, "Django MVP Scaffold")
+
+        self.client.force_login(self.user)
+        self.assertContains(self.client.get(reverse("profile")), "Example Account Service")
+
+    @override_settings(
+        SITE_NAME="Example Account Service",
+        MAINTENANCE_MODE=True,
+        MAINTENANCE_MODE_IGNORE_TESTS=False,
+    )
+    def test_maintenance_page_uses_configured_identity(self):
+        response = self.client.get("/")
+        self.assertContains(response, "Example Account Service", status_code=503)
+
+    @override_settings(
+        SITE_NAME="Example Account Service",
+        EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
+    )
+    def test_password_reset_uses_configured_identity_with_older_site_record(self):
+        self.addCleanup(Site.objects.clear_cache)
+        Site.objects.filter(pk=settings.SITE_ID).update(name="Previous display name")
+        Site.objects.clear_cache()
+        self.user.email = "account@example.com"
+        self.user.save()
+        mail.outbox.clear()
+
+        response = self.client.post(reverse("password_reset"), {"email": self.user.email})
+
+        self.assertRedirects(response, reverse("password_reset_done"))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Example Account Service", mail.outbox[0].subject)
+        self.assertIn("Example Account Service", mail.outbox[0].body)
+        self.assertNotIn("Previous display name", mail.outbox[0].body)
 
     def test_profile_uses_shared_shell(self):
         self.client.force_login(self.user)
@@ -71,7 +111,7 @@ class AccountsTests(TestCase):
         response = self.client.get(reverse("profile"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "creative-operator")
+        self.assertContains(response, "account-user")
         self.assertContains(response, "css/app.css")
 
     def test_account_pages_redirect_anonymous_users_to_login(self):
@@ -97,7 +137,7 @@ class AccountsTests(TestCase):
             reverse("settings:profile"),
             {
                 "csrfmiddlewaretoken": csrf_token,
-                "first_name": "Creative",
+                "first_name": "Alex",
                 "last_name": "Operator",
                 "email": "operator@example.com",
             },
@@ -105,7 +145,7 @@ class AccountsTests(TestCase):
 
         self.assertRedirects(response, reverse("settings:profile"))
         self.user.refresh_from_db()
-        self.assertEqual(self.user.first_name, "Creative")
+        self.assertEqual(self.user.first_name, "Alex")
         self.assertEqual(self.user.last_name, "Operator")
         self.assertEqual(self.user.email, "operator@example.com")
 
@@ -188,7 +228,7 @@ class AccountsTests(TestCase):
 
         self.assertIn("product/accounts/templates", template.origin.name)
         response = self.client.get(reverse("password_reset"))
-        self.assertContains(response, "CreativeBatch")
+        self.assertContains(response, "Django MVP Scaffold")
         self.assertContains(response, "Forgot password")
 
     def test_appearance_save_does_not_clear_stored_preferences(self):
@@ -202,6 +242,7 @@ class AccountsTests(TestCase):
         )
 
     @override_settings(
+        SITE_NAME="Example Account Service",
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
     )
     def test_new_customer_receives_a_welcome_email(self):
@@ -218,6 +259,8 @@ class AccountsTests(TestCase):
         self.assertEqual(mail.outbox[0].to, ["new-customer@example.com"])
         self.assertIn("Welcome", mail.outbox[0].subject)
         self.assertIn("new-customer", mail.outbox[0].body)
+        self.assertEqual(mail.outbox[0].subject, "Welcome to Example Account Service")
+        self.assertIn("The Example Account Service team", mail.outbox[0].body)
 
     @override_settings(
         EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"
@@ -670,7 +713,7 @@ class PlatformIntegrationTests(TestCase):
         flat_page = FlatPage.objects.create(
             url="/terms/",
             title="Terms of service",
-            content="CreativeBatch terms content",
+            content="Django MVP Scaffold terms content",
         )
         flat_page.sites.add(Site.objects.get_current())
 
@@ -706,7 +749,7 @@ class PlatformIntegrationTests(TestCase):
         self.client.force_login(self.staff_user)
         staff_response = self.client.get(admin_url)
         self.assertEqual(staff_response.status_code, 200)
-        self.assertContains(staff_response, "Product administration")
+        self.assertContains(staff_response, "Django MVP Scaffold administration")
 
     @override_settings(
         MAINTENANCE_MODE=True,
@@ -782,6 +825,31 @@ class ProductionSettingsTests(SimpleTestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("SECRET_KEY environment variable is required", result.stderr)
+
+    def test_production_identity_defaults_and_custom_admin_branding(self):
+        for name in ("", "Example Account Service"):
+            with self.subTest(name=name):
+                env = self.production_env()
+                env["SITE_NAME"] = name
+                expected = name or "Django MVP Scaffold"
+                result = self.run_settings_import(
+                    env,
+                    "import product.settings as settings; "
+                    f"assert settings.SITE_NAME == {expected!r}",
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+                # Admin branding is shared; validate it without requiring the
+                # optional PostgreSQL driver in a development-only installation.
+                env["DJANGO_ENV"] = "development"
+                result = self.run_settings_import(
+                    env,
+                    "import django; django.setup(); import product.urls; "
+                    "from django.conf import settings; from django.contrib import admin; "
+                    f"assert settings.SITE_NAME == {expected!r}; "
+                    f"assert admin.site.site_header == {expected + ' administration'!r}",
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_development_accepts_empty_example_secret_key(self):
         env = os.environ.copy()

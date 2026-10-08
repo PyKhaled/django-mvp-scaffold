@@ -6,8 +6,8 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.generic import TemplateView
 
-admin.site.site_title = "Product admin"
-admin.site.site_header = "Product administration"
+admin.site.site_title = f"{settings.SITE_NAME} admin"
+admin.site.site_header = f"{settings.SITE_NAME} administration"
 admin.site.index_title = "Administration"
 
 sitemaps = {

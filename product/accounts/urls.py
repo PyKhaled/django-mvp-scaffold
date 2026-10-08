@@ -2,12 +2,14 @@ from django.urls import include, path
 
 from product.accounts.views import (
     AccountPasswordChangeView,
+    AccountPasswordResetView,
     appearance_settings,
     profile,
     profile_settings,
 )
 
 urlpatterns = [
+    path('password_reset/', AccountPasswordResetView.as_view(), name='password_reset'),
     path('', include('django.contrib.auth.urls')),
     path('profile/', profile, name='profile'),
     path('settings/',include(([

@@ -5,9 +5,10 @@ from django.template.loader import render_to_string
 
 class WelcomeEmailMessage(EmailMessage):
     def __init__(self, user):
-        subject = "Welcome to Our Platform 🎉"
+        subject = f"Welcome to {settings.SITE_NAME}"
         body = render_to_string("registration/welcome_email.txt", {
             "username": user.username,
+            "product_name": settings.SITE_NAME,
             "email": user.email or "No email provided",
             "joined_at": user.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
         })

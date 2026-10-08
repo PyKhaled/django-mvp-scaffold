@@ -1,13 +1,23 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.views import PasswordChangeView, PasswordResetView
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
 from product.accounts.forms import ProfileForm
 
 User = get_user_model()
+
+
+class AccountPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        self.extra_email_context = {
+            **(self.extra_email_context or {}),
+            "site_name": settings.SITE_NAME,
+        }
+        return super().form_valid(form)
 
 
 @login_required

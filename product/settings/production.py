@@ -24,7 +24,6 @@ if len(SECRET_KEY) < 50:
     raise RuntimeError("SECRET_KEY must contain at least 50 characters")
 DEFAULT_FROM_EMAIL = required_environment_value("DEFAULT_FROM_EMAIL")
 SITE_DOMAIN = required_environment_value("SITE_DOMAIN")
-SITE_NAME = os.environ.get("SITE_NAME", SITE_DOMAIN).strip() or SITE_DOMAIN
 
 ALLOWED_HOSTS = [host.strip() for host in required_environment_value("ALLOWED_HOSTS").split(",") if host.strip()]
 if not ALLOWED_HOSTS or "*" in ALLOWED_HOSTS:

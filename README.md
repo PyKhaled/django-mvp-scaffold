@@ -12,9 +12,9 @@ Production uses PostgreSQL, Redis, Google Cloud Storage, SMTP, and a trusted HTT
 proxy. Deployment and recovery must be validated for your environment; see
 [known issues and limits](docs/known-issues.md).
 
-CreativeBatch is the example product identity. Its marketing copy is sample
-content, not implemented creative-production functionality. Add your own domain
-models, workflows, permissions, and acceptance tests.
+The default display name is **Django MVP Scaffold**. Set `SITE_NAME` to your product
+name to update shared branding, administration, and account emails. Add your own
+domain models, workflows, permissions, and acceptance tests.
 
 ## Included
 
@@ -51,8 +51,8 @@ when settings load. Never use a production key locally.
 
 ## Start your product
 
-Follow the [customization guide](docs/guides/customization.md): replace CreativeBatch
-branding, define one complete product workflow, add focused Django apps, and test
+Follow the [customization guide](docs/guides/customization.md): configure your product
+identity, define one complete product workflow, add focused Django apps, and test
 customer and operator permissions. Keep project styles in `product/static/css/app.css`.
 
 ## Documentation

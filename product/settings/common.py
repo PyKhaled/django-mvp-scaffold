@@ -84,6 +84,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'product.context_processors.identity',
                 'maintenance_mode.context_processors.maintenance_mode',
             ],
         },
@@ -132,7 +133,7 @@ LOGIN_REDIRECT_URL = "/accounts/profile/"
 
 SITE_ID = 1
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "localhost:8000")
-SITE_NAME = os.environ.get("SITE_NAME", SITE_DOMAIN).strip() or SITE_DOMAIN
+SITE_NAME = os.environ.get("SITE_NAME", "Django MVP Scaffold").strip() or "Django MVP Scaffold"
 
 
 # Internationalization
@@ -300,7 +301,6 @@ MAINTENANCE_MODE_IGNORE_ADMIN_SITE = True
 MAINTENANCE_MODE_IGNORE_SUPERUSER = True
 MAINTENANCE_MODE_IGNORE_TESTS = True
 MAINTENANCE_MODE_RETRY_AFTER = 900
-
 
 
 

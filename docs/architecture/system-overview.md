@@ -2,7 +2,7 @@
 
 The scaffold is a server-rendered Django application. URL routing dispatches to
 account views, helpdesk overrides, Django administration, and shared templates.
-It does not implement the creative-production workflow described in sample copy.
+Domain-specific product workflows must be implemented by the adopting project.
 
 ## Components and request flow
 
