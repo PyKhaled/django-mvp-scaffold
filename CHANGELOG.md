@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Fixed
+- Account and profile metadata history now records changes and acting users; admin
+  activation actions preserve history. Password hashes and login timestamps are excluded.
 - Hijack warning templates now use the active user context and CSRF-protected release forms;
   the custom persistent notification is injected during impersonation.
 - Notification pages respect unread filtering and pagination, use the shared layout,

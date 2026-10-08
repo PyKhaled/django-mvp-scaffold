@@ -31,6 +31,23 @@ credentials. These tests do not prove actual SMTP, GCS, Redis, or PostgreSQL acc
 
 ## Conventions
 
+Account fields and profile notes are tracked with django-simple-history and
+available through their administration History pages. Password hashes and login
+timestamps are excluded. Changes without a request have no acting user unless
+`_history_user` is supplied. Impersonated requests record the effective user.
+
+Use model `save()`/`delete()` or the package's bulk history utilities for tracked
+models. Plain `QuerySet.update()` and `bulk_update()` bypass history. The admin
+activation actions use `bulk_update_with_history` to preserve attribution.
+
+After deploying the history migration, optionally capture a baseline of existing
+accounts and profile metadata with `python manage.py populate_history --auto`.
+This records current values for objects without history; it cannot recover past
+changes. Historical records retain personal data and notes after object deletion;
+include them in your product's retention and access policies. This is model
+change history, not an immutable log or a password-change audit. Group membership
+and per-user permission relationships are not tracked by this configuration.
+
 Use four-space indentation and standard Django naming. Commit messages should
 state the change, for example `fix(helpdesk): repair public route imports`.
 Do not disable assertions to make checks pass. Keep synthetic test data in tests

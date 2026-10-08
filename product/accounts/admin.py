@@ -4,6 +4,8 @@ from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from hijack.contrib.admin import HijackUserAdminMixin
+from simple_history.admin import SimpleHistoryAdmin
+from simple_history.utils import bulk_update_with_history
 
 from product.accounts.models import User, UserInformation
 
@@ -13,6 +15,12 @@ admin.site.unregister(Group)
 class UserInformationInlineAdmin(admin.StackedInline):
     model = UserInformation
     extra = 1
+
+
+@admin.register(UserInformation)
+class UserInformationAdmin(SimpleHistoryAdmin):
+    list_display = ("user",)
+    search_fields = ("user__username", "user__email")
 
 
 @admin.register(Group)
@@ -48,7 +56,7 @@ class GroupAdmin(DjangoGroupAdmin):
 
 
 @admin.register(User)
-class UserAdmin(HijackUserAdminMixin, DjangoUserAdmin):
+class UserAdmin(HijackUserAdminMixin, SimpleHistoryAdmin, DjangoUserAdmin):
     """
     Enhanced User admin with optimized queries, security hardening, and audit features.
     """
@@ -73,17 +81,23 @@ class UserAdmin(HijackUserAdminMixin, DjangoUserAdmin):
 
     @admin.action(description="Activate selected users")
     def activate(self, request, queryset):
-        updated = queryset.update(is_active=True)
+        updated = self.set_active_with_history(request, queryset, True)
         self.message_user(request, f"{updated} user(s) activated successfully.", messages.SUCCESS)
 
     @admin.action(description="Deactivate selected users")
     def deactivate(self, request, queryset):
         # Safety check: prevent current user from deactivating themselves
         queryset = queryset.exclude(id=request.user.id)
-        updated = queryset.update(is_active=False)
+        updated = self.set_active_with_history(request, queryset, False)
         self.message_user(request, f"{updated} user(s) deactivated successfully.", messages.SUCCESS)
 
     def get_queryset(self, request):
         """Optimize queries to prevent N+1 problems."""
         qs = super().get_queryset(request)
         return qs.select_related('userinformation')
+
+    def set_active_with_history(self, request, queryset, active):
+        users = list(queryset)
+        for user in users:
+            user.is_active = active
+        return bulk_update_with_history(users, User, ["is_active"], default_user=request.user)

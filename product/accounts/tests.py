@@ -27,6 +27,72 @@ from product.accounts.models import UserInformation
 User = get_user_model()
 
 
+class AccountHistoryTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="history-user", password="test-pass-123")
+
+    def test_account_history_records_changes_without_password_hashes(self):
+        self.user.email = "history@example.com"
+        self.user.save()
+        historical_model = self.user.history.model
+        fields = {field.name for field in historical_model._meta.fields}
+        self.assertNotIn("password", fields)
+        self.assertNotIn("last_login", fields)
+        self.assertEqual(self.user.history.first().email, "history@example.com")
+        self.assertEqual(self.user.history.first().history_type, "~")
+        user_id = self.user.pk
+        self.user.delete()
+        self.assertEqual(historical_model.objects.filter(id=user_id).first().history_type, "-")
+
+    def test_profile_metadata_records_create_update_and_delete(self):
+        information = UserInformation.objects.create(user=self.user, notes="Original")
+        information.notes = "Updated"
+        information.save()
+        information_id = information.pk
+        information.delete()
+        rows = list(UserInformation.history.filter(id=information_id).order_by("history_date", "history_id"))
+        self.assertEqual([row.history_type for row in rows], ["+", "~", "-"])
+        self.assertEqual([row.notes for row in rows], ["Original", "Updated", "Updated"])
+
+    def test_profile_request_records_the_account_making_the_change(self):
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse("settings:profile"),
+            {"first_name": "Updated", "last_name": "User", "email": ""},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.user.history.first().history_user_id, self.user.pk)
+        self.assertEqual(self.user.history.first().first_name, "Updated")
+
+    def test_admin_actions_record_actor_and_preserve_self_protection(self):
+        administrator = User.objects.create_superuser(username="history-admin", email="", password="test-pass-123")
+        self.client.force_login(administrator)
+        for action, active in (("deactivate", False), ("activate", True)):
+            response = self.client.post(reverse("admin:auth_user_changelist"), {
+                "action": action, "_selected_action": [str(self.user.pk), str(administrator.pk)],
+            })
+            self.assertEqual(response.status_code, 302)
+            self.user.refresh_from_db()
+            administrator.refresh_from_db()
+            self.assertEqual(self.user.is_active, active)
+            self.assertTrue(administrator.is_active)
+            latest = self.user.history.first()
+            self.assertEqual(latest.history_user_id, administrator.pk)
+            self.assertEqual(latest.is_active, active)
+
+    def test_history_is_visible_to_admin_and_denied_to_regular_users(self):
+        information = UserInformation.objects.create(user=self.user, notes="Recorded note")
+        urls = [reverse("admin:auth_user_history", args=[self.user.pk]),
+                reverse("admin:accounts_userinformation_history", args=[information.pk])]
+        self.client.force_login(self.user)
+        for url in urls:
+            self.assertEqual(self.client.get(url).status_code, 302)
+        administrator = User.objects.create_superuser(username="history-reader", email="", password="test-pass-123")
+        self.client.force_login(administrator)
+        for url in urls:
+            self.assertEqual(self.client.get(url).status_code, 200)
+
+
 class AccountsTests(TestCase):
     def setUp(self):
         self.user = User(username="account-user", email="")

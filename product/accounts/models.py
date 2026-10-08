@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 User = get_user_model()
 
@@ -20,6 +21,7 @@ class NationalityChoices(models.TextChoices):
 class UserInformation(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     notes = models.TextField('Notes', blank=True, help_text='Additional notes about the user.', default='')
+    history = HistoricalRecords()
 
     def __str__(self):
         return f"{self.user.username} Information"
