@@ -51,6 +51,26 @@ when settings load. Never use a production key locally.
 
 ## Start your product
 
+After creating a repository from this GitHub template, run `make init` with
+Python 3.12 or newer. It asks for a project slug, Django package, and GitHub
+`owner/repository`, updates source imports, Docker paths, documentation and metadata,
+and creates a private `.env` with a fresh development secret and display name.
+It refuses an existing `.env`, destination package, or initialization record.
+
+```sh
+make init INIT_ARGS="--name my-project --package my_project --repository your-org/my-project --dry-run"
+make init INIT_ARGS="--name my-project --package my_project --repository your-org/my-project"
+make config-check PYTHON=.venv/bin/python
+```
+
+Run this on a fresh checkout before creating local data. Review the generated diff
+and commit it, including `.scaffold-init.json`; `.env` is ignored by Git. Install
+development dependencies before `config-check`. To run other Django commands with
+the generated environment, use `set -a; . ./.env; set +a` in your shell first.
+The initializer keeps Git history and remotes, third-party notices, changelog, and
+GitHub workflows. This scaffold has no bundled Compose configuration or Celery;
+configure deployment services separately using the deployment runbook.
+
 Follow the [customization guide](docs/guides/customization.md): configure your product
 identity, define one complete product workflow, add focused Django apps, and test
 customer and operator permissions. Keep project styles in `product/static/css/app.css`.
