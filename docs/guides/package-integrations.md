@@ -15,3 +15,9 @@ Only trust proxy IP headers when a trusted proxy sanitizes them.
 Production uses the shared Redis default cache for atomic counters. Development
 uses local memory, so limits are per process. Configure the trusted proxy to
 supply accurate peer IPs; untrusted forwarding headers are not used.
+
+## Landing metadata
+
+`django-meta` renders the landing page title, description, Open Graph and Twitter
+tags. The canonical URL uses `SITE_DOMAIN` and `META_SITE_PROTOCOL` (default
+`https`); set the latter to `http` for a local development site.

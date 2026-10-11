@@ -12,6 +12,7 @@ base = [
     "django-hijack==3.7.4",
     "django-maintenance-mode==0.22.0",
     "django-ratelimit==4.1.0",
+    "django-meta==2.5.1",
     "django-model-utils==5.0.0",
     "django-notifications-community==1.12.1",
     "django-simple-history==3.10.1",

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'hijack',
     'hijack.contrib.admin',
     'simple_history',
+    'meta',
 ]
 
 
@@ -315,3 +316,7 @@ SILENCED_SYSTEM_CHECKS = ["admin.E410"]
 
 AUTHENTICATION_RATE_LIMIT = os.environ.get("AUTHENTICATION_RATE_LIMIT", "10/m")
 RATELIMIT_USE_CACHE = "default"
+
+META_SITE_DOMAIN = SITE_DOMAIN
+META_SITE_NAME = SITE_NAME
+META_SITE_PROTOCOL = os.environ.get("META_SITE_PROTOCOL", "https")

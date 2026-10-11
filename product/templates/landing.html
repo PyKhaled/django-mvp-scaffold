@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="{{ product_name }} provides accounts, profile settings, notifications, and support.">
-  <title>{{ product_name }} · Accounts and support</title>
+  {% include "meta/meta.html" %}
+  <link rel="canonical" href="{{ meta.url }}">
   {% include 'layout/tabler_head.html' %}
 </head>
 <body>

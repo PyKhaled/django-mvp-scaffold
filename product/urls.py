@@ -4,7 +4,8 @@ from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
-from django.views.generic import TemplateView
+
+from product.views import LandingView
 
 admin.site.site_title = f"{settings.SITE_NAME} admin"
 admin.site.site_header = f"{settings.SITE_NAME} administration"
@@ -34,7 +35,7 @@ urlpatterns = [
 
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
 
-    path('', TemplateView.as_view(template_name='landing.html')),
+    path('', LandingView.as_view()),
     path('', include('django.contrib.flatpages.urls')),
 
 ]
