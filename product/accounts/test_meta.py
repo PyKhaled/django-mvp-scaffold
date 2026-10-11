@@ -7,5 +7,6 @@ class LandingMetadataTests(SimpleTestCase):
         response = self.client.get("/")
         self.assertContains(response, '<link rel="canonical" href="https://example.org/">')
         self.assertContains(response, 'property="og:title"')
+        self.assertContains(response, 'property="og:site_name" content="Demo"')
         self.assertContains(response, 'name="twitter:card"')
         self.assertContains(response, '<title>Demo · Accounts and support</title>', html=True)
