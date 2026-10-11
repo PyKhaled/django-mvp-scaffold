@@ -312,3 +312,6 @@ SESSION_ENGINE = "user_sessions.backends.db"
 LOGOUT_REDIRECT_URL = "/"
 # The admin check only recognizes Django's own middleware.
 SILENCED_SYSTEM_CHECKS = ["admin.E410"]
+
+AUTHENTICATION_RATE_LIMIT = os.environ.get("AUTHENTICATION_RATE_LIMIT", "10/m")
+RATELIMIT_USE_CACHE = "default"
