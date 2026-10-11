@@ -20,6 +20,8 @@ urlpatterns = [
     path('management/admin/', admin.site.urls),
     path('management/admin/doc/', include('django.contrib.admindocs.urls')),
     
+    path('', include('user_sessions.urls')),
+
     path('hijack/', include('hijack.urls')),
 
     path('maintenance-mode/', include('maintenance_mode.urls')),

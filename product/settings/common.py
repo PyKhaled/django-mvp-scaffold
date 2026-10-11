@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'user_sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'user_sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
@@ -306,3 +306,9 @@ MAINTENANCE_MODE_RETRY_AFTER = 900
 
 
 
+
+# User-linked database sessions; changing engines signs out existing sessions.
+SESSION_ENGINE = "user_sessions.backends.db"
+LOGOUT_REDIRECT_URL = "/"
+# The admin check only recognizes Django's own middleware.
+SILENCED_SYSTEM_CHECKS = ["admin.E410"]
