@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     'hijack.contrib.admin',
     'simple_history',
     'meta',
+    'product.plans_apps.ScaffoldPlansConfig',
+    'ordered_model',
+    'sequences',
 ]
 
 
@@ -320,3 +323,9 @@ RATELIMIT_USE_CACHE = "default"
 META_SITE_DOMAIN = SITE_DOMAIN
 META_SITE_NAME = SITE_NAME
 META_SITE_PROTOCOL = os.environ.get("META_SITE_PROTOCOL", "https")
+
+# Configure offer and invoice issuer in the adopting project before selling plans.
+PLANS_CURRENCY = os.environ.get("PLANS_CURRENCY", "USD")
+PLANS_GET_COUNTRY_FROM_IP = False
+PLANS_DEFAULT_GRACE_PERIOD = 30
+ENABLE_FAKE_PAYMENTS = False
