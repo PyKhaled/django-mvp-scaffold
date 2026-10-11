@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'hijack.contrib.admin',
     'simple_history',
     'meta',
+    'health_check',
     'product.plans_apps.ScaffoldPlansConfig',
     'ordered_model',
     'sequences',
@@ -329,3 +330,6 @@ PLANS_CURRENCY = os.environ.get("PLANS_CURRENCY", "USD")
 PLANS_GET_COUNTRY_FROM_IP = False
 PLANS_DEFAULT_GRACE_PERIOD = 30
 ENABLE_FAKE_PAYMENTS = False
+
+# Keep monitoring available during maintenance.
+MAINTENANCE_MODE_IGNORE_URLS = (r"^/health/",)

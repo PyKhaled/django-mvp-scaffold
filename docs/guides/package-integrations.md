@@ -35,3 +35,12 @@ configured. Fake payments are disabled in production (upstream enables its
 simulation URLs whenever DEBUG is true). Schedule `expire_accounts` daily when
 using expiring plans; this scaffold does not install a scheduler or enforce
 quotas on application views automatically.
+
+## Health checks
+
+`django-health-check` v4 serves `/health/` and probes the database and default
+cache. Request JSON with `Accept: application/json` or `?format=json`. Healthy
+checks return 200; dependency failures return 500. Responses are not cached and
+monitoring remains available during maintenance. Restrict this route at the
+proxy if dependency diagnostics should be private. DNS, mail and storage probes
+are excluded to avoid external requests and file writes on routine probes.

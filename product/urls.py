@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
+from health_check.views import HealthCheckView
 
 from product.views import LandingView
 
@@ -16,6 +17,9 @@ sitemaps = {
 }
 
 urlpatterns = [
+    path("health/", HealthCheckView.as_view(checks=[
+        "health_check.checks.Database", "health_check.checks.Cache",
+    ]), name="health_check"),
     path('i18n/', include('django.conf.urls.i18n')),
     
     path('management/admin/', admin.site.urls),
