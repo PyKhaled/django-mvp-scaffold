@@ -313,10 +313,8 @@ MAINTENANCE_MODE_RETRY_AFTER = 900
 
 
 # User-linked database sessions; changing engines signs out existing sessions.
-SESSION_ENGINE = "user_sessions.backends.db"
+SESSION_ENGINE = "product.session_backend"
 LOGOUT_REDIRECT_URL = "/"
-# The admin check only recognizes Django's own middleware.
-SILENCED_SYSTEM_CHECKS = ["admin.E410"]
 
 AUTHENTICATION_RATE_LIMIT = os.environ.get("AUTHENTICATION_RATE_LIMIT", "10/m")
 RATELIMIT_USE_CACHE = "default"

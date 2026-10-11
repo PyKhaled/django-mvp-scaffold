@@ -2,10 +2,18 @@
 
 ## User sessions
 
+The dependency is pinned to upstream commit
+`527f91e83e61d240d6bba6e20d460cc515a52dbb`, which uses `importlib.metadata`
+instead of the removed `pkg_resources` API in the PyPI 2.0.0 release.
+This keeps the scaffold on setuptools 84 rather than a vulnerable older version.
+Installing the base group requires Git and access to GitHub as well as PyPI.
+
 `django-user-sessions` stores sessions linked to users, with IP and user-agent
 metadata. Visit `/account/sessions/` to review and revoke your own sessions.
 Run `python manage.py migrate` after installation. Switching the session engine
 signs out existing sessions; old Django session rows are not migrated.
+The project session backend also handles revoked and expired sessions as
+anonymous rather than raising an upstream missing-row error.
 Only trust proxy IP headers when a trusted proxy sanitizes them.
 
 ## Authentication rate limits
