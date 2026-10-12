@@ -23,6 +23,36 @@
       </div>
 
       {% if request.user.is_authenticated %}
+        {% with unread_count=request.user.notifications.unread.count %}
+          <div class="nav-item dropdown">
+            <button type="button" class="nav-link px-2 bg-transparent border-0" id="notifications-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications" aria-label="Notifications{% if unread_count %}, {{ unread_count }} unread{% endif %}">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon" aria-hidden="true">
+                <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3H4a4 4 0 0 0 2-3v-3a7 7 0 0 1 4-6"/>
+                <path d="M9 17v1a3 3 0 0 0 6 0v-1"/>
+              </svg>
+              {% if unread_count %}<span class="badge bg-red badge-blink" aria-hidden="true"></span>{% endif %}
+            </button>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow p-0 notification-dropdown" aria-labelledby="notifications-toggle">
+              <div class="p-3 border-bottom fw-bold">Notifications</div>
+              <div class="list-group list-group-flush notification-dropdown-list">
+                {% for notice in request.user.notifications.all|slice:':10' %}
+                  <a href="{% url 'notifications:all' %}#notification-{{ notice.slug }}" class="list-group-item list-group-item-action">
+                    <div class="d-flex align-items-start gap-2">
+                      <div class="flex-fill">
+                        <div class="text-body">{{ notice.actor }} {{ notice.verb }}{% if notice.target %} · {{ notice.target }}{% endif %}</div>
+                        <div class="text-secondary small mt-1">{{ notice.timesince }} ago</div>
+                      </div>
+                      {% if notice.unread %}<span class="badge bg-blue-lt">Unread</span>{% endif %}
+                    </div>
+                  </a>
+                {% empty %}
+                  <div class="p-3 text-secondary">No notifications to show.</div>
+                {% endfor %}
+              </div>
+              <a href="{% url 'notifications:all' %}" class="d-block p-3 border-top text-center">View all notifications</a>
+            </div>
+          </div>
+        {% endwith %}
         <div class="nav-item dropdown">
           <a href="#" class="nav-link d-flex lh-1 p-0 px-2" data-bs-toggle="dropdown" aria-label="Open user menu">
             <span class="avatar avatar-sm bg-primary-lt">{{ request.user.username|first|upper }}</span>
