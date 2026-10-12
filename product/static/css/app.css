@@ -4,6 +4,16 @@
   --app-surface: #f6f8fb;
 }
 
+.notification-dropdown {
+  width: min(24rem, calc(100vw - 2rem));
+}
+
+.notification-dropdown-list {
+  max-height: min(28rem, 60vh);
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+
 .app-mark {
   align-items: center;
   background: var(--tblr-primary);

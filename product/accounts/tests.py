@@ -778,6 +778,24 @@ class NotificationsTests(TestCase):
         notify.send(self.other_user, recipient=recipient, verb=verb)
         return recipient.notifications.get(verb=verb)
 
+    def test_header_lists_latest_ten_notifications_for_current_user(self):
+        notices = [self.send_notification(self.user, f"header update {index}") for index in range(12)]
+        self.send_notification(self.other_user, "private other user update")
+
+        response = self.client.get(reverse("notifications:all"))
+        header = response.content.decode().split("</header>", 1)[0]
+
+        self.assertIn('data-bs-toggle="dropdown"', header)
+        self.assertIn('aria-labelledby="notifications-toggle"', header)
+        self.assertEqual(header.count('class="list-group-item list-group-item-action"'), 10)
+        for notice in notices[-10:]:
+            self.assertIn(f'#notification-{notice.slug}', header)
+            self.assertContains(response, f'id="notification-{notice.slug}"')
+        for notice in notices[:2]:
+            self.assertNotIn(f'#notification-{notice.slug}', header)
+        self.assertNotIn("private other user update", header)
+        self.assertIn("View all notifications", header)
+
     def test_unread_page_filters_read_and_other_users_notifications(self):
         self.send_notification(self.user, "unread account update")
         self.send_notification(self.user, "previously read update").mark_as_read()
@@ -786,7 +804,7 @@ class NotificationsTests(TestCase):
         response = self.client.get(reverse("notifications:unread"))
 
         self.assertContains(response, "unread account update")
-        self.assertNotContains(response, "previously read update")
+        self.assertNotIn("previously read update", response.content.decode().split("<main", 1)[1])
         self.assertNotContains(response, "another account update")
         self.assertContains(response, "css/app.css")
         self.assertContains(response, "Django MVP Scaffold")
@@ -806,11 +824,13 @@ class NotificationsTests(TestCase):
                 self.assertEqual(len(second.context["notifications"]), 1)
                 self.assertContains(first, "?page=2")
                 self.assertContains(second, "?page=1")
+                first_body = first.content.decode().split("<main", 1)[1]
+                second_body = second.content.decode().split("<main", 1)[1]
                 for notice in second.context["notifications"]:
-                    self.assertContains(second, notice.verb)
-                    self.assertNotContains(first, notice.verb)
+                    self.assertIn(notice.verb, second_body)
+                    self.assertNotIn(notice.verb, first_body)
                 for notice in first.context["notifications"]:
-                    self.assertNotContains(second, notice.verb)
+                    self.assertNotIn(notice.verb, second_body)
 
     def test_empty_notification_page_uses_shared_layout(self):
         response = self.client.get(reverse("notifications:unread"))
