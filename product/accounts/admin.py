@@ -17,12 +17,6 @@ class UserInformationInlineAdmin(admin.StackedInline):
     extra = 1
 
 
-@admin.register(UserInformation)
-class UserInformationAdmin(SimpleHistoryAdmin):
-    list_display = ("user",)
-    search_fields = ("user__username", "user__email")
-
-
 @admin.register(Group)
 class GroupAdmin(DjangoGroupAdmin):
     """
