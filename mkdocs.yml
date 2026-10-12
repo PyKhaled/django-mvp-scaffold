@@ -40,6 +40,7 @@ nav:
   - Guides:
       - Development: guides/development.md
       - Customization: guides/customization.md
+      - Notifications: guides/notifications.md
       - Releases: guides/releases.md
 
   - Security:

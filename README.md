@@ -159,6 +159,7 @@ Start at the [documentation home](docs/README.md).
 - [Development and tests](docs/guides/development.md)
 - [Configuration reference](docs/configuration.md)
 - [Package integrations](docs/guides/package-integrations.md)
+- [Notification events, preferences, and email delivery](docs/guides/notifications.md)
 - [Architecture](docs/architecture/system-overview.md)
 - [Deployment and rollback](docs/runbooks/deployment.md)
 - [Known issues](docs/known-issues.md)
