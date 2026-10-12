@@ -90,6 +90,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'product.context_processors.identity',
+                'product.accounts.notification_context.notifications',
                 'maintenance_mode.context_processors.maintenance_mode',
             ],
         },
@@ -137,6 +138,7 @@ LOGIN_REDIRECT_URL = "/accounts/profile/"
 # https://docs.djangoproject.com/en/5.2/ref/contrib/sites/
 
 SITE_ID = 1
+DJANGO_NOTIFICATIONS_CONFIG = {"USE_JSONFIELD": True}
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "localhost:8000")
 SITE_NAME = os.environ.get("SITE_NAME", "Django MVP Scaffold").strip() or "Django MVP Scaffold"
 

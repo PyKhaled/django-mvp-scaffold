@@ -776,6 +776,18 @@ class NotificationsTests(TestCase):
         notify.send(self.other_user, recipient=recipient, verb=verb)
         return recipient.notifications.get(verb=verb)
 
+    def test_slashless_notifications_redirects_to_list_and_preserves_query(self):
+        response = self.client.get("/notifications?source=header")
+        self.assertRedirects(response, reverse("notifications:all") + "?source=header", status_code=301)
+
+    def test_slashless_notifications_keeps_login_required(self):
+        self.client.logout()
+        response = self.client.get("/notifications", follow=True)
+        self.assertEqual(response.redirect_chain, [
+            (reverse("notifications:all"), 301),
+            (reverse("login") + "?next=" + reverse("notifications:all"), 302),
+        ])
+
     def test_header_lists_latest_ten_notifications_for_current_user(self):
         notices = [self.send_notification(self.user, f"header update {index}") for index in range(12)]
         self.send_notification(self.other_user, "private other user update")
@@ -785,12 +797,12 @@ class NotificationsTests(TestCase):
 
         self.assertIn('data-bs-toggle="dropdown"', header)
         self.assertIn('aria-labelledby="notifications-toggle"', header)
-        self.assertEqual(header.count('class="list-group-item list-group-item-action"'), 10)
+        self.assertEqual(header.count('class="notification-preview-item"'), 10)
         for notice in notices[-10:]:
-            self.assertIn(f'#notification-{notice.slug}', header)
+            self.assertIn(reverse('notification_open', args=[notice.slug]), header)
             self.assertContains(response, f'id="notification-{notice.slug}"')
         for notice in notices[:2]:
-            self.assertNotIn(f'#notification-{notice.slug}', header)
+            self.assertNotIn(reverse('notification_open', args=[notice.slug]), header)
         self.assertNotIn("private other user update", header)
         self.assertIn("View all notifications", header)
 

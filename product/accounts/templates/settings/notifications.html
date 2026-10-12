@@ -1,0 +1,26 @@
+{% extends 'settings/base.html' %}
+{% block setting_page_content %}
+<form method="post">
+  {% csrf_token %}
+  <div class="card-body">
+    <h2>Notification preferences</h2>
+    <p class="text-secondary">Choose how you receive each type of update. Emails go to your account email address. Daily digests combine updates into one email.</p>
+    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+    {% for label, preference in rows %}
+      <div class="row g-3 align-items-center mb-4">
+        <div class="col-md-4 fw-bold">{{ label }}</div>
+        <div class="col-md-3">
+          <label class="form-check"><input class="form-check-input" type="checkbox" name="in_app_{{ preference.kind }}" {% if preference.in_app %}checked{% endif %}><span class="form-check-label">In-app</span></label>
+        </div>
+        <div class="col-md-5">
+          <label class="form-label" for="email_{{ preference.kind }}">Email delivery for {{ label|lower }}</label>
+          <select class="form-select" id="email_{{ preference.kind }}" name="email_{{ preference.kind }}">
+            {% for value, title in email_modes %}<option value="{{ value }}" {% if preference.email_mode == value %}selected{% endif %}>{{ title }}</option>{% endfor %}
+          </select>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="card-footer"><button class="btn btn-primary" type="submit">Save preferences</button></div>
+</form>
+{% endblock %}

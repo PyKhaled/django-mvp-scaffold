@@ -25,3 +25,36 @@ class UserInformation(models.Model):
 
     def __str__(self):
         return f"{self.user.username} Information"
+
+
+class NotificationPreference(models.Model):
+    class Kind(models.TextChoices):
+        REPLY = "reply", "Ticket replies"
+        ASSIGNMENT = "assignment", "Ticket assignments"
+        STATUS = "status", "Ticket status changes"
+        ACCOUNT = "account", "Account changes"
+
+    class EmailMode(models.TextChoices):
+        OFF = "off", "Off"
+        IMMEDIATE = "immediate", "Immediate"
+        DIGEST = "digest", "Daily digest"
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    kind = models.CharField(max_length=16, choices=Kind.choices)
+    in_app = models.BooleanField(default=True)
+    email_mode = models.CharField(max_length=16, choices=EmailMode.choices, default=EmailMode.OFF)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["user", "kind"], name="unique_notification_preference")]
+
+
+class NotificationEmail(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ticket = models.ForeignKey("helpdesk.Ticket", on_delete=models.SET_NULL, null=True, blank=True)
+    kind = models.CharField(max_length=16, choices=NotificationPreference.Kind.choices)
+    subject = models.CharField(max_length=255)
+    path = models.TextField()
+    digest = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)

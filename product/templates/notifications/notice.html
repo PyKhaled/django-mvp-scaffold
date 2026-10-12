@@ -8,8 +8,14 @@
       </div>
       <div class="text-secondary small">{% blocktranslate with elapsed=notice.timesince %}{{ elapsed }} ago{% endblocktranslate %}</div>
       {% if notice.description %}<div class="text-secondary mt-1">{{ notice.description|linebreaksbr }}</div>{% endif %}
+      {% if notice.data.count > 1 %}<div class="text-secondary small">{{ notice.data.count }} updates</div>{% endif %}
+      {% if notice.level == 'warning' or notice.level == 'error' %}<span class="badge bg-orange-lt mt-1">Important</span>{% endif %}
     </div>
     <div class="col-12 col-sm-auto">
+      <form method="post" action="{% url 'notification_open' notice.slug %}" class="mb-2">
+        {% csrf_token %}
+        <button class="btn btn-sm btn-primary" type="submit">Open update</button>
+      </form>
       <form method="post" action="{% if notice.unread %}{% url 'notifications:mark_as_read' notice.slug %}{% else %}{% url 'notifications:mark_as_unread' notice.slug %}{% endif %}">
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
