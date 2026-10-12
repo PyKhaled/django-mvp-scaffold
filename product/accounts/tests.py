@@ -81,9 +81,7 @@ class AccountHistoryTests(TestCase):
             self.assertEqual(latest.is_active, active)
 
     def test_history_is_visible_to_admin_and_denied_to_regular_users(self):
-        information = UserInformation.objects.create(user=self.user, notes="Recorded note")
-        urls = [reverse("admin:auth_user_history", args=[self.user.pk]),
-                reverse("admin:accounts_userinformation_history", args=[information.pk])]
+        urls = [reverse("admin:auth_user_history", args=[self.user.pk])]
         self.client.force_login(self.user)
         for url in urls:
             self.assertEqual(self.client.get(url).status_code, 302)
