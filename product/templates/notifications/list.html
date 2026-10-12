@@ -6,6 +6,7 @@
 {% block page_pretitle %}{% trans 'Your account' %}{% endblock %}
 
 {% block page_actions %}
+  <a href="{% url 'settings:notifications' %}" class="btn btn-outline-secondary">Preferences</a>
   <form action="{% url 'notifications:mark_all_as_read' %}" method="post">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ request.path }}">

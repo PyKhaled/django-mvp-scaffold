@@ -4,8 +4,10 @@ from django.contrib import admin
 from django.contrib.flatpages.sitemaps import FlatPageSitemap
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
+from django.views.generic import RedirectView
 from health_check.views import HealthCheckView
 
+from product.accounts.notification_views import open_notification, preview
 from product.views import LandingView
 
 admin.site.site_title = f"{settings.SITE_NAME} admin"
@@ -33,6 +35,12 @@ urlpatterns = [
 
     path("accounts/", include("product.accounts.urls")),
 
+    # The flat-page catch-all resolves slashless paths, bypassing APPEND_SLASH.
+    path("notifications", RedirectView.as_view(
+        pattern_name="notifications:all", permanent=True, query_string=True,
+    )),
+    path("notifications/open/<int:slug>/", open_notification, name="notification_open"),
+    path("notifications/preview/", preview, name="notification_preview"),
     path("notifications/", include(("notifications.urls", "notifications"))),
 
     path("plans/", include("plans.urls")),

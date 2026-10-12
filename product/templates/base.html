@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -40,6 +40,7 @@
   </div>
 
   {% include 'layout/tabler_scripts.html' %}
+  {% if request.user.is_authenticated %}<script src="{% static 'js/notifications.js' %}" defer></script>{% endif %}
   <script>
     document.querySelectorAll('.toast').forEach(function (element) {
       window.setTimeout(function () {

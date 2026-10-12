@@ -1,0 +1,18 @@
+{% for notice in header_notifications %}
+  <form method="post" action="{% url 'notification_open' notice.slug %}" class="notification-preview-item">
+    {% csrf_token %}
+    <button type="submit" class="list-group-item list-group-item-action w-100 text-start">
+      <span class="d-flex align-items-start gap-2">
+        <span class="flex-fill">
+          <span class="d-block text-body">{{ notice.verb }}{% if not notice.data.kind %} · {{ notice.actor }}{% endif %}</span>
+          {% if notice.data.count > 1 %}<span class="d-block text-secondary small">{{ notice.data.count }} updates</span>{% endif %}
+          <span class="d-block text-secondary small mt-1">{{ notice.timesince }} ago</span>
+        </span>
+        {% if notice.level == 'warning' or notice.level == 'error' %}<span class="badge bg-orange-lt">Important</span>{% endif %}
+        {% if notice.unread %}<span class="badge bg-blue-lt">Unread</span>{% endif %}
+      </span>
+    </button>
+  </form>
+{% empty %}
+  <div class="p-3 text-secondary">No notifications to show.</div>
+{% endfor %}

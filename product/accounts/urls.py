@@ -1,6 +1,7 @@
 from django.contrib.auth.views import LoginView
 from django.urls import include, path
 
+from product.accounts.notification_views import preferences
 from product.accounts.rate_limits import authentication_rate_limit
 from product.accounts.views import (
     AccountPasswordChangeView,
@@ -19,5 +20,6 @@ urlpatterns = [
         path('profile/', profile_settings, name='profile'),
         path('password/', AccountPasswordChangeView.as_view(), name='change_password'),
         path('appearance/', appearance_settings, name='appearance'),
+        path('notifications/', preferences, name='notifications'),
     ],'settings'), namespace='settings')),
 ]

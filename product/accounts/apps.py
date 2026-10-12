@@ -12,3 +12,4 @@ class AccountsConfig(AppConfig):
 
         register(get_user_model(), app=self.name, excluded_fields=["password", "last_login"])
         import product.accounts.signals  # noqa
+        import product.accounts.notification_signals  # noqa

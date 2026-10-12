@@ -15,6 +15,15 @@ MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
+# Polling responses must not cause the toolbar to fetch expired history entries
+# and display an error overlay over the notification dropdown.
+DEBUG_TOOLBAR_CONFIG = {
+    "SHOW_TOOLBAR_CALLBACK": "product.debug_toolbar_config.show_toolbar",
+    # Our callback delegates to the default runtime DEBUG check, so it remains
+    # disabled during tests despite using a custom callback path.
+    "IS_RUNNING_TESTS": False,
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
