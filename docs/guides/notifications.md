@@ -87,3 +87,48 @@ node tools/test_notification_refresh.cjs
 Tests cover recipient isolation, private replies, actor suppression, grouping,
 read actions and CSRF, authorized destinations, safe rendering, preferences,
 queued email retries, and daily digest delivery.
+
+## Browser web push
+
+Browser push is off by default, independent of in-app and email delivery. On the
+notification preferences page, enable the current browser, then select categories
+and save preferences. Permission is requested only by the enable button. Disable
+each shared browser before changing accounts; another account enabling the same
+subscription transfers it to that account. Push alerts contain a generic message
+and open the authenticated notification list, without ticket details or secret links.
+
+Install dependencies, then run `python manage.py migrate`. Set these environment
+variables before starting Django and the delivery worker:
+
+- `WEB_PUSH_PUBLIC_KEY`: URL-safe base64 uncompressed P-256 VAPID public key.
+- `WEB_PUSH_PRIVATE_KEY`: path to a protected PEM private key or encoded DER key.
+- `WEB_PUSH_SUBJECT`: contact URI, for example `mailto:ops@example.com`.
+
+Generate a deployment-owned key pair using the installed `vapid --gen` command;
+use `vapid --applicationServerKey` for the public application server key. Keep the
+private key outside Git, preserve it across deploys, and share it with the worker.
+See the [pywebpush documentation](https://github.com/web-push-libs/pywebpush)
+for accepted key formats. Changing keys requires browsers to disable and enable
+subscriptions again.
+
+Run this command once per minute using your scheduler:
+
+```bash
+python manage.py send_notification_pushes
+```
+
+The worker rechecks account status and category preferences, removes subscriptions
+returning 404/410, and retains transient failures for retry. Queued updates expire
+after one day. Delivery is at least once: partial delivery or a crash may produce
+repeated alerts; the browser groups alerts under one tag. Events with no subscribed
+browser are discarded. Server requests have a ten-second timeout.
+
+`WEB_PUSH_ALLOWED_HOSTS` is a comma-separated exact provider-host allowlist. Defaults
+cover Google FCM, Mozilla, and Apple. Add only trusted push service hosts used by
+your supported browsers. Subscription requests require login and CSRF protection;
+private destinations and arbitrary endpoint hosts are rejected.
+
+Browsers require a secure context (HTTPS in deployment). Browser and operating
+system permission/support determine availability. Real provider delivery must be
+verified with deployment credentials and a subscribed browser; automated tests mock
+the outbound provider call.

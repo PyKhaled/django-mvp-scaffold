@@ -42,6 +42,7 @@ class NotificationPreference(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     kind = models.CharField(max_length=16, choices=Kind.choices)
     in_app = models.BooleanField(default=True)
+    web_push = models.BooleanField(default=False)
     email_mode = models.CharField(max_length=16, choices=EmailMode.choices, default=EmailMode.OFF)
 
     class Meta:
@@ -55,6 +56,21 @@ class NotificationEmail(models.Model):
     subject = models.CharField(max_length=255)
     path = models.TextField()
     digest = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+
+
+class WebPushSubscription(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    endpoint = models.URLField(max_length=2048, unique=True)
+    keys = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class NotificationPush(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    kind = models.CharField(max_length=16, choices=NotificationPreference.Kind.choices)
     created_at = models.DateTimeField(auto_now_add=True)
     sent_at = models.DateTimeField(null=True, blank=True)
     cancelled_at = models.DateTimeField(null=True, blank=True)

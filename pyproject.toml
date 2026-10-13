@@ -20,6 +20,7 @@ base = [
     "django-simple-history==3.10.1",
     "django-user-sessions @ git+https://github.com/jazzband/django-user-sessions.git@527f91e83e61d240d6bba6e20d460cc515a52dbb",
     "pillow==12.3.0",
+    "pywebpush==2.5.0",
     "setuptools==84.0.0",
 ]
 

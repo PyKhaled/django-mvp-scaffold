@@ -8,6 +8,7 @@ from django.views.generic import RedirectView
 from health_check.views import HealthCheckView
 
 from product.accounts.notification_views import open_notification, preview
+from product.accounts.web_push_views import configuration, service_worker, subscription
 from product.views import LandingView
 
 admin.site.site_title = f"{settings.SITE_NAME} admin"
@@ -19,6 +20,9 @@ sitemaps = {
 }
 
 urlpatterns = [
+    path("push-worker.js", service_worker, name="push_worker"),
+    path("accounts/push/config/", configuration, name="push_config"),
+    path("accounts/push/subscription/", subscription, name="push_subscription"),
     path("health/", HealthCheckView.as_view(checks=[
         "health_check.checks.Database", "health_check.checks.Cache",
     ]), name="health_check"),

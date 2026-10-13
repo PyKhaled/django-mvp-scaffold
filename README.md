@@ -22,7 +22,8 @@ domain models, workflows, permissions, and acceptance tests.
 - Login and password-reset rate limits with `django-ratelimit`.
 - Customized administration, user metadata, and staff impersonation.
 - Public support requests, staff helpdesk, and capability-protected ticket links.
-- Notifications, maintenance mode, flat pages, and sitemap.
+- Notifications with category preferences, queued email, and opt-in browser web push.
+- Maintenance mode, flat pages, and sitemap.
 - Landing-page metadata, social tags, and canonical URLs with `django-meta`.
 - Pricing, account plans, quotas, and billing pages with `django-plans`.
 - Database and cache readiness checks with `django-health-check`.

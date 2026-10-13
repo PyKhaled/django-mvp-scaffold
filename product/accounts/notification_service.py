@@ -11,7 +11,7 @@ from helpdesk.models import Ticket
 from notifications.helpers import invalidate_unread_count_cache
 from notifications.signals import notify
 
-from product.accounts.models import NotificationEmail, NotificationPreference
+from product.accounts.models import NotificationEmail, NotificationPreference, NotificationPush
 
 
 def destination(notice, user):
@@ -80,6 +80,8 @@ def emit(*, recipient, actor, kind, verb, target=None, urgent=False):
                     count=1,
                 )
             invalidate_unread_count_cache(recipient)
+        if preference.web_push:
+            NotificationPush.objects.create(user=recipient, kind=kind)
         if preference.email_mode != NotificationPreference.EmailMode.OFF and recipient.email:
             NotificationEmail.objects.create(
                 user=recipient,
