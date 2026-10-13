@@ -1,16 +1,25 @@
 {% extends 'settings/base.html' %}
+{% load static %}
 {% block setting_page_content %}
 <form method="post">
   {% csrf_token %}
   <div class="card-body">
     <h2>Notification preferences</h2>
     <p class="text-secondary">Choose how you receive each type of update. Emails go to your account email address. Daily digests combine updates into one email.</p>
+    <div id="web-push-controls" class="mb-4" data-config="{% url 'push_config' %}" data-subscription="{% url 'push_subscription' %}" data-worker="{% url 'push_worker' %}">
+      <h3>Browser notifications</h3>
+      <p>Enable each browser you want to receive updates on. Shared devices should disable notifications before changing accounts.</p>
+      <button type="button" class="btn btn-outline-primary" data-enable {% if not web_push_configured %}disabled{% endif %}>Enable this browser</button>
+      <button type="button" class="btn btn-outline-secondary" data-disable>Disable this browser</button>
+      <p class="text-secondary mt-2" role="status">{% if not web_push_configured %}Browser notifications are not configured yet.{% endif %}</p>
+    </div>
     {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
     {% for label, preference in rows %}
       <div class="row g-3 align-items-center mb-4">
         <div class="col-md-4 fw-bold">{{ label }}</div>
         <div class="col-md-3">
           <label class="form-check"><input class="form-check-input" type="checkbox" name="in_app_{{ preference.kind }}" {% if preference.in_app %}checked{% endif %}><span class="form-check-label">In-app</span></label>
+          <label class="form-check"><input class="form-check-input" type="checkbox" name="web_push_{{ preference.kind }}" {% if preference.web_push %}checked{% endif %}><span class="form-check-label">Browser push</span></label>
         </div>
         <div class="col-md-5">
           <label class="form-label" for="email_{{ preference.kind }}">Email delivery for {{ label|lower }}</label>
@@ -24,3 +33,5 @@
   <div class="card-footer"><button class="btn btn-primary" type="submit">Save preferences</button></div>
 </form>
 {% endblock %}
+
+{% block page_scripts %}<script src="{% static 'js/web-push.js' %}" defer></script>{% endblock %}

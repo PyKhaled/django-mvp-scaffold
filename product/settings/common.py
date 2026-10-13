@@ -333,3 +333,14 @@ ENABLE_FAKE_PAYMENTS = False
 
 # Keep monitoring available during maintenance.
 MAINTENANCE_MODE_IGNORE_URLS = (r"^/health/",)
+
+# Web push is opt-in and requires deployment-owned VAPID credentials.
+WEB_PUSH_PUBLIC_KEY = os.environ.get("WEB_PUSH_PUBLIC_KEY", "")
+WEB_PUSH_PRIVATE_KEY = os.environ.get("WEB_PUSH_PRIVATE_KEY", "")
+WEB_PUSH_SUBJECT = os.environ.get("WEB_PUSH_SUBJECT", "")
+WEB_PUSH_ALLOWED_HOSTS = tuple(
+    host.strip() for host in os.environ.get(
+        "WEB_PUSH_ALLOWED_HOSTS",
+        "fcm.googleapis.com,updates.push.services.mozilla.com,web.push.apple.com",
+    ).split(",") if host.strip()
+)

@@ -11,6 +11,7 @@ from notifications.utils import slug2id
 
 from product.accounts.models import NotificationPreference
 from product.accounts.notification_service import destination
+from product.accounts.web_push import configured
 
 
 def preview_context(user):
@@ -56,6 +57,7 @@ def preferences(request):
                         user=request.user,
                         kind=kind,
                         defaults={
+                            "web_push": request.POST.get(f"web_push_{kind}") == "on",
                             "in_app": request.POST.get(f"in_app_{kind}") == "on",
                             "email_mode": request.POST[f"email_{kind}"],
                         },
@@ -72,6 +74,7 @@ def preferences(request):
         "settings/notifications.html",
         {
             "rows": rows,
+            "web_push_configured": configured(),
             "email_modes": NotificationPreference.EmailMode.choices,
             "error": error,
         },
