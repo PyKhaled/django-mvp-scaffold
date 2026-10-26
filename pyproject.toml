@@ -19,6 +19,7 @@ base = [
     "django-notifications-community==1.12.1",
     "django-simple-history==3.10.1",
     "django-user-sessions @ git+https://github.com/jazzband/django-user-sessions.git@527f91e83e61d240d6bba6e20d460cc515a52dbb",
+    "django-vantage @ git+https://github.com/Pythondeveloper6/django-vantage.git@a3268694c1f46639277d67aa565d6045ef6a17e5",
     "pillow==12.3.0",
     "pywebpush==2.5.0",
     "setuptools==84.0.0",

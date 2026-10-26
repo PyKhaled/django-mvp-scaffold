@@ -12,6 +12,10 @@ or `docker run --env-file`. Never commit a populated environment file.
 - `SITE_NAME`: product display name in both environments, default `Django MVP Scaffold`.
   Restart application processes after changing it. Accounts migrations also update
   the Django Site record; password-reset emails use the configured name immediately.
+- Vantage admin uses `SITE_NAME` for its panel title, the Tabler primary blue
+  (`#066fd1`) as its brand color, and the system color theme. Its release is pinned
+  to an immutable upstream Git commit in `pyproject.toml` because `django-vantage`
+  `0.2.0a1` is alpha and not yet available on PyPI.
 - `PORT`: container bind port, default `8000`.
 - `WEB_CONCURRENCY`: production Gunicorn workers, default `2`; tune for workload.
 

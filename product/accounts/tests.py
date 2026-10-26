@@ -288,6 +288,24 @@ class AccountsTests(TestCase):
         self.assertIn(response.status_code, {200, 302})
         self.assertNotIn("_auth_user_id", self.client.session)
 
+    def test_vantage_admin_is_staff_only_and_django_admin_remains_available(self):
+        vantage_url = reverse("vantage:dashboard")
+        anonymous_response = self.client.get(vantage_url)
+        self.assertEqual(anonymous_response.status_code, 302)
+
+        self.client.force_login(self.user)
+        customer_response = self.client.get(vantage_url)
+        self.assertIn(customer_response.status_code, {302, 403})
+
+        administrator = User.objects.create_superuser(
+            username="vantage-admin",
+            email="",
+            password="test-pass-123",
+        )
+        self.client.force_login(administrator)
+        self.assertEqual(self.client.get(vantage_url).status_code, 200)
+        self.assertEqual(self.client.get(reverse("admin:index")).status_code, 200)
+
     def test_password_recovery_uses_the_product_template(self):
         template = get_template("registration/password_reset_form.html")
 

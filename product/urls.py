@@ -6,6 +6,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from django.views.generic import RedirectView
 from health_check.views import HealthCheckView
+from vantage import site as vantage_site
 
 from product.accounts.notification_views import open_notification, preview
 from product.accounts.web_push_views import configuration, service_worker, subscription
@@ -30,6 +31,7 @@ urlpatterns = [
     
     path('management/admin/', admin.site.urls),
     path('management/admin/doc/', include('django.contrib.admindocs.urls')),
+    path('management/vantage/', vantage_site.urls),
     
     path('', include('user_sessions.urls')),
 

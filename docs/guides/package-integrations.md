@@ -52,3 +52,29 @@ checks return 200; dependency failures return 500. Responses are not cached and
 monitoring remains available during maintenance. Restrict this route at the
 proxy if dependency diagnostics should be private. DNS, mail and storage probes
 are excluded to avoid external requests and file writes on routine probes.
+
+## Vantage administration
+
+`django-vantage` `0.2.0a1` is pinned to an immutable upstream Git commit in
+`pyproject.toml`: this version is documented upstream but is not currently
+published to PyPI. It is an alpha release without a stable API or upgrade
+guarantees. Evaluate it as an internal administration interface before relying on
+it for production workflows. It runs alongside Django's existing admin: Vantage
+is at `/management/vantage/`, and Django admin remains at `/management/admin/` so
+existing routes, templates, and custom actions continue to work unchanged.
+
+The project adopts registered `ModelAdmin` configuration from
+`product/accounts/panel.py`. Vantage reports unsupported admin customizations in
+`python manage.py check`; review those warnings rather than assuming every
+customization carries over. The current check reports untranslated legacy and
+third-party admin settings; it also warns that a sensitive recurring-plan token
+is excluded from Vantage search. That field remains searchable only through the
+legacy admin's existing configuration, so review the warnings and required
+workflows before switching staff to Vantage. Vantage's sign-in uses the project's
+existing `/accounts/login/` route. Its login-throttling and panel-security
+middleware are enabled after Django authentication middleware.
+
+Run `python manage.py migrate` after installing the package. Vantage stores site
+configuration, audit entries, saved views, and per-list preferences in its own
+tables. Production startup already runs migrations; static assets are collected
+with the existing `collectstatic` step.

@@ -21,6 +21,7 @@ domain models, workflows, permissions, and acceptance tests.
 - User-owned session tracking and device sign-out with `django-user-sessions`.
 - Login and password-reset rate limits with `django-ratelimit`.
 - Customized administration, user metadata, and staff impersonation.
+- Vantage admin panel alongside Django admin, with existing admin customizations adopted.
 - Public support requests, staff helpdesk, and capability-protected ticket links.
 - Notifications with category preferences, queued email, and opt-in browser web push.
 - Maintenance mode, flat pages, and sitemap.
@@ -83,9 +84,10 @@ python manage.py createsuperuser
 python manage.py runserver 127.0.0.1:8000
 ```
 
-Open <http://127.0.0.1:8000/>. Administration is at `/management/admin/`; login
-redirects to `/accounts/profile/`. Support is at `/help/` and requires a queue with
-public submission enabled. See the [support runbook](docs/runbooks/support-email.md).
+Open <http://127.0.0.1:8000/>. Django admin is at `/management/admin/`; the
+Vantage panel is at `/management/vantage/`. Login redirects to `/accounts/profile/`.
+Support is at `/help/` and requires a queue with public submission enabled. See the
+[support runbook](docs/runbooks/support-email.md).
 
 Development uses SQLite, console email, and a file-backed maintenance cache.
 Django does not load `.env` automatically. Export a stable local `SECRET_KEY` to
@@ -101,6 +103,7 @@ when settings load. Never use a production key locally.
 | `django-meta` | Render landing-page title, description, Open Graph, Twitter, and canonical metadata. |
 | `django-plans` | Pricing at `/plans/pricing/`, current plan at `/plans/account/`, and plan/billing administration. |
 | `django-health-check` | Database and default-cache probes at `/health/`; use `?format=json` for JSON. |
+| `django-vantage` | Alpha admin panel at `/management/vantage/`; existing Django admin remains at `/management/admin/`. |
 
 ### Authentication and metadata
 

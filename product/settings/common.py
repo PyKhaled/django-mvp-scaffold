@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.humanize',
     'django.contrib.redirects',
+    'vantage',
 
     'bootstrap4form',
     'maintenance_mode',
@@ -64,6 +65,8 @@ MIDDLEWARE = [
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'vantage.middleware.LoginThrottleMiddleware',
+    'vantage.middleware.PanelSecurityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'hijack.middleware.HijackUserMiddleware',
@@ -141,6 +144,11 @@ SITE_ID = 1
 DJANGO_NOTIFICATIONS_CONFIG = {"USE_JSONFIELD": True}
 SITE_DOMAIN = os.environ.get("SITE_DOMAIN", "localhost:8000")
 SITE_NAME = os.environ.get("SITE_NAME", "Django MVP Scaffold").strip() or "Django MVP Scaffold"
+VANTAGE = {
+    "SITE_TITLE": SITE_NAME,
+    "BRAND_COLOR": "#066fd1",
+    "THEME": "system",
+}
 
 
 # Internationalization
