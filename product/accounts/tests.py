@@ -296,6 +296,13 @@ class AccountsTests(TestCase):
         self.client.force_login(self.user)
         customer_response = self.client.get(vantage_url)
         self.assertIn(customer_response.status_code, {302, 403})
+        slashless_response = self.client.get("/management/vantage?source=test")
+        self.assertRedirects(
+            slashless_response,
+            f"{vantage_url}?source=test",
+            status_code=301,
+            fetch_redirect_response=False,
+        )
 
         administrator = User.objects.create_superuser(
             username="vantage-admin",
@@ -304,7 +311,12 @@ class AccountsTests(TestCase):
         )
         self.client.force_login(administrator)
         self.assertEqual(self.client.get(vantage_url).status_code, 200)
+        self.assertEqual(
+            self.client.get("/management/vantage/accounts/notificationpush/").status_code,
+            200,
+        )
         self.assertEqual(self.client.get(reverse("admin:index")).status_code, 200)
+        self.assertEqual(self.client.get("/management/admin/doc/").status_code, 200)
 
     def test_password_recovery_uses_the_product_template(self):
         template = get_template("registration/password_reset_form.html")
@@ -984,6 +996,8 @@ class PlatformIntegrationTests(TestCase):
         request = RequestFactory().get("/", REMOTE_ADDR="127.0.0.1")
 
         self.assertTrue(show_toolbar(request))
+        history_url = reverse("djdt:history_sidebar")
+        self.assertEqual(self.client.get(history_url).status_code, 400)
 
 
 class HijackIntegrationTests(TestCase):

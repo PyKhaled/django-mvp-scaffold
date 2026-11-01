@@ -37,7 +37,8 @@ new repository, and run `make init` with
 Python 3.12 or newer. It asks for a project slug, Django package, and GitHub
 `owner/repository`, updates source imports, Docker paths, documentation and metadata,
 and creates a private `.env` with a fresh development secret and display name.
-It refuses an existing `.env`, destination package, or initialization record.
+It refuses an existing `.env`, destination package, initialization record, or
+package name that shadows the standard library or a dependency import.
 
 ```sh
 make init INIT_ARGS="--name my-project --package my_project --repository your-org/my-project --dry-run"

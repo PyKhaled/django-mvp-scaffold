@@ -2,6 +2,7 @@
 
 import argparse
 import ast
+import importlib.metadata
 import json
 import keyword
 import re
@@ -14,12 +15,45 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def reserved_package_names(root):
+    reserved = {name.casefold() for name in sys.stdlib_module_names}
+    reserved.update(name.casefold() for name in importlib.metadata.packages_distributions())
+
+    project = tomllib.loads((root / "pyproject.toml").read_text())
+    for dependencies in project.get("dependency-groups", {}).values():
+        for dependency in dependencies:
+            if not isinstance(dependency, str):
+                continue
+            match = re.match(r"[A-Za-z0-9][A-Za-z0-9._-]*", dependency)
+            if match:
+                distribution = re.sub(r"[-.]+", "_", match.group()).casefold()
+                reserved.add(distribution)
+                if distribution == "pillow":
+                    reserved.add("pil")
+
+    for source in (root / "product").rglob("*.py"):
+        if source.is_symlink():
+            continue
+        for node in ast.walk(ast.parse(source.read_text(), filename=str(source))):
+            if isinstance(node, ast.Import):
+                reserved.update(alias.name.split(".", 1)[0].casefold() for alias in node.names)
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                reserved.add(node.module.split(".", 1)[0].casefold())
+
+    reserved.discard("product")
+    return reserved
+
+
 def initialize(root, name, package, repository, dry_run=False):
     if not re.fullmatch(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*", name):
         raise ValueError("Project name must be a lowercase slug, such as my-project.")
     if (not re.fullmatch(r"[a-z][a-z0-9_]*", package)
-            or keyword.iskeyword(package) or package in sys.stdlib_module_names):
-        raise ValueError("Package must be a lowercase Python identifier, not a reserved name.")
+            or keyword.iskeyword(package)
+            or package.casefold() in reserved_package_names(root)):
+        raise ValueError(
+            "Package must be a lowercase Python identifier that does not shadow "
+            "the standard library or an installed/project dependency."
+        )
     if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
         raise ValueError("Repository must have the form owner/repository.")
     if (root / ".scaffold-init.json").exists() or (root / ".env").exists():

@@ -29,8 +29,12 @@ urlpatterns = [
     ]), name="health_check"),
     path('i18n/', include('django.conf.urls.i18n')),
     
-    path('management/admin/', admin.site.urls),
     path('management/admin/doc/', include('django.contrib.admindocs.urls')),
+    path('management/admin/', admin.site.urls),
+    path(
+        'management/vantage',
+        RedirectView.as_view(pattern_name='vantage:dashboard', permanent=True, query_string=True),
+    ),
     path('management/vantage/', vantage_site.urls),
     
     path('', include('user_sessions.urls')),
@@ -55,17 +59,19 @@ urlpatterns = [
 
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="sitemap"),
 
-    path('', LandingView.as_view()),
-    path('', include('django.contrib.flatpages.urls')),
-
 ]
 
-if settings.DEBUG:
+if "debug_toolbar" in settings.INSTALLED_APPS:
     import debug_toolbar
 
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
     ]
+
+urlpatterns += [
+    path('', LandingView.as_view()),
+    path('', include('django.contrib.flatpages.urls')),
+]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

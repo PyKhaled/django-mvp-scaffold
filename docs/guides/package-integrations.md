@@ -5,7 +5,8 @@
 The dependency is pinned to upstream commit
 `527f91e83e61d240d6bba6e20d460cc515a52dbb`, which uses `importlib.metadata`
 instead of the removed `pkg_resources` API in the PyPI 2.0.0 release.
-This keeps the scaffold on setuptools 84 rather than a vulnerable older version.
+This keeps the scaffold on patched setuptools 84.1.0 rather than a vulnerable
+older version.
 Installing the base group requires Git and access to GitHub as well as PyPI.
 
 `django-user-sessions` stores sessions linked to users, with IP and user-agent
