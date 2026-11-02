@@ -140,6 +140,24 @@ and operational details.
 With the development dependencies installed and the virtual environment active:
 
 ```sh
+make build
+make test
+make start
+# Run the server without Django's autoreloader for debugger attachment:
+make debug
+# Override the Python executable or server address if needed:
+make test PYTHON=.venv/bin/python
+make start HOST=0.0.0.0 PORT=8001
+```
+
+`make build` runs Django's system check, migration consistency check, and a
+static-files collection dry run. `make test` runs the Django test suite.
+`make start` and `make debug` load a generated, shell-safe `.env` when present.
+The debug server disables the autoreloader; VS Code also provides launch
+configurations for the development server and test suite in `.vscode/launch.json`.
+Run individual checks directly when needed:
+
+```sh
 ruff check .
 python manage.py check
 python manage.py makemigrations --check --dry-run
