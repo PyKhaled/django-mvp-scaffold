@@ -8,8 +8,9 @@ administration, helpdesk, notifications, account plans, and a locally hosted Tab
 
 **Status: early-stage scaffold.** The supported development baseline is Python 3.12.
 Production uses PostgreSQL, Redis, Google Cloud Storage, SMTP, and a trusted HTTPS
-proxy. Deployment and recovery must be validated for your environment; see
-[known issues and limits](docs/known-issues.md).
+proxy. Deployment and recovery must be validated for your environment; see the
+[deployment](docs/runbooks/deployment.md) and [backup and restore](docs/runbooks/backup-restore.md)
+runbooks.
 
 The default display name is **Django MVP Scaffold**. Set `SITE_NAME` to your product
 name to update shared branding, administration, and account emails. Add your own
@@ -185,7 +186,6 @@ Start at the [documentation home](docs/README.md).
 - [Notification events, preferences, and email delivery](docs/guides/notifications.md)
 - [Architecture](docs/architecture/system-overview.md)
 - [Deployment and rollback](docs/runbooks/deployment.md)
-- [Known issues](docs/known-issues.md)
 - [Helpdesk API reference](docs/api/index.md) and [adoption templates](docs/templates/index.md)
 
 Preview the docs with `python -m pip install --group docs` followed by `mkdocs serve`.

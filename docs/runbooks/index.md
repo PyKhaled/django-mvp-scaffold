@@ -17,5 +17,6 @@ dumps, password-reset URLs, or ticket capability URLs into incident records.
 
 ## Release gates
 
-Review [known issues](../known-issues.md). Record revision, operator, environment,
-backup location, rollback target, checks, and unresolved failures before release.
+Review the [deployment](deployment.md) and [backup and restore](backup-restore.md)
+procedures. Record revision, operator, environment, backup location, rollback
+target, checks, and unresolved failures before release.

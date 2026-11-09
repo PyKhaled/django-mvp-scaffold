@@ -2,8 +2,8 @@
 
 ## Preconditions and stop conditions
 
-Review [known limits](../known-issues.md) and the [configuration reference](../configuration.md).
-The container provides separate web and release roles. Provision services and
+Review the [configuration reference](../configuration.md). The container provides
+separate web and release roles. Provision services and
 rehearse the following sequence before exposing production traffic.
 
 Identify the release revision, previous artifact, service restart/traffic-switch

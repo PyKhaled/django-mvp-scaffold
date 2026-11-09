@@ -28,4 +28,4 @@ Tickets, account details, reset URLs, and ticket capability links can contain
 sensitive data. Treat generated links as credentials. Operators must define media
 access, backup retention, network boundaries, and recovery objectives for their
 own deployment. See [deployment](../runbooks/deployment.md) and
-[known limits](../known-issues.md).
+[backup and restore](../runbooks/backup-restore.md).

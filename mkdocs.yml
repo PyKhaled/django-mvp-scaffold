@@ -46,9 +46,7 @@ nav:
   - Security:
       - Overview: security/index.md
       - Vulnerability Management: security/vulnerability-management.md
-
   - Configuration: configuration.md
-  - Known Issues: known-issues.md
   - Templates:
       - Overview: templates/index.md
       - Architecture Decision: templates/architecture-decision.md

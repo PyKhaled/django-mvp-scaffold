@@ -10,7 +10,6 @@ require validation against your own infrastructure.
 - [Architecture](architecture/system-overview.md): components and request flow.
 - [Helpdesk API reference](api/index.md): OpenAPI contract and embedded Swagger UI.
 - [Runbooks](runbooks/index.md): deployment, maintenance, backup, support, incidents.
-- [Known issues](known-issues.md): current limitations and evidence boundaries.
 - [Releases](guides/releases.md): versioning, checks, and rollback notes.
 - [Security](security/index.md): private reporting and handling.
 - [Adoption templates](templates/index.md): worksheets for downstream products.
